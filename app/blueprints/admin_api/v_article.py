@@ -2,13 +2,60 @@ from flask import g, request
 
 from . import bp_admin_api
 from ...api_utils import *
-from ...models import Article
+from ...models import Article, ArticleType
+
+
+@bp_admin_api.route('/article_type/create/', methods=['POST'])
+def create_article_type():
+    """创建文章分类"""
+    name = request.json.get("name")
+    claim_args_str(1204, name)
+    article_type = ArticleType.get_by_name(name)
+    claim_args_true(1304, not article_type)
+    ArticleType.new(name)
+    return api_success_response({})
+
+
+@bp_admin_api.route('/article_type/edit/', methods=['POST'])
+def edit_article_type_name():
+    """编辑文章分类名称"""
+    article_type_id, name = map(g.json.get, ['article_type_id', 'name'])
+    claim_args(1203, article_type_id, name)
+    claim_args_int(1204, article_type_id)
+    claim_args_str(1204, name)
+    article_type = ArticleType.get_by_id(article_type_id, code=1104)
+    article_type.name = name
+    article_type.save()
+    return api_success_response({})
+
+
+@bp_admin_api.route('/article_type/delete/', methods=['POST'])
+def delete_article_type():
+    """删除文章分类"""
+    article_type_id = g.json.get("article_type_id")
+    claim_args_int(1204, article_type_id)
+    article_type = ArticleType.get_by_id(article_type_id, code=1104)
+    query = Article.select().where(Article.article_type_id == article_type_id)
+    for article in query:
+        article.update_delete(is_delete=1)
+    article_type.update_delete(is_delete=1)
+    return api_success_response({})
+
+
+@bp_admin_api.route('/article_type/all/', methods=['GET'])
+def get_all_poster_type():
+    """查询所有海报分类"""
+    query = ArticleType.select().where(ArticleType.is_delete == 0)
+    data = {
+        "article_types": [article_type.to_dict() for article_type in query]
+    }
+    return api_success_response(data)
 
 
 @bp_admin_api.route('/article/create/', methods=['POST'])
 def create_article():
     """创建文章"""
-    title, contents, cover_url, extra_add_count = map(g.json.get, ['title', 'contents', 'cover_url', 'extra_add_count'])
+    article_type_id, title, contents, cover_url, extra_add_count = map(g.json.get, ['article_type_id', 'title', 'contents', 'cover_url', 'extra_add_count'])
     claim_args(1203, title, contents, cover_url, extra_add_count)
     claim_args_int(1204, extra_add_count)
     claim_args_str(1204, title, contents, cover_url)

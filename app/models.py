@@ -17,7 +17,7 @@ from app.utils.aes_util import aes_crypto
 db = MySQLDatabase(
     'zhuzhuangqi',
     user='root',
-    password='root' or os.getenv('MYSQL_PASSWORD'),
+    password='' or os.getenv('MYSQL_PASSWORD'),
     host='127.0.0.1',
     port=3306,
     charset='utf8mb4'
@@ -327,7 +327,7 @@ class PosterType(BaseModel):
     @classmethod
     def get_by_name(cls, name: str):
         try:
-            return cls.select().where(cls.name == name).get()
+            return cls.select().where(cls.name == name, cls.is_delete == 0).get()
 
         except cls.DoesNotExist:
             pass
@@ -340,7 +340,7 @@ class PosterType(BaseModel):
 
 class Poster(BaseModel):
     """海报"""
-    poster_type_id = IntegerField()
+    poster_type_id = IntegerField(default=0)
     name = CharField()
     cover_url = CharField()
     real_use_count = IntegerField(default=0)
@@ -394,8 +394,31 @@ class PosterTheme(BaseModel):
         return self.save_ut()
 
 
+class ArticleType(BaseModel):
+    """文章分类"""
+    name = CharField()
+
+    class Meta:
+        table_name = 'article_type'
+
+    @classmethod
+    def new(cls, name):
+        return cls.create(
+            name=name
+        )
+
+    @classmethod
+    def get_by_name(cls, name: str):
+        try:
+            return cls.select().where(cls.name == name, cls.is_delete == 0).get()
+
+        except cls.DoesNotExist:
+            pass
+
+
 class Article(BaseModel):
     """文章"""
+    article_type_id = IntegerField(default=0)  # 文章分类id
     title = CharField()
     contents = _ObjectField()
     cover_url = CharField()

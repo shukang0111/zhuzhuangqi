@@ -4,6 +4,8 @@ import json
 import os
 import datetime
 import calendar
+import random
+import string
 from hashlib import md5
 import urllib
 from urllib import parse
@@ -84,6 +86,51 @@ def get_access_token() -> str:
     if not access_token:
         raise RuntimeError(repr(ret))
     return access_token
+
+
+def get_weixin_jsapi_ticket(access_token):
+    """获取jsapi_ticket，jsapi_ticket是公众号用于调用微信JS接口的临时票据"""
+    data = {
+        'access_token': access_token,
+        'type': 'jsapi'
+    }
+    url = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket'
+    resp = requests.post(url, data=data).json()
+    current_app.logger.info(resp)
+    jsapi_ticket = resp.get("ticket")
+    if not jsapi_ticket:
+        raise RuntimeError(repr(resp))
+    return jsapi_ticket
+
+
+def get_weixin_sign(url):
+    """"""
+    try:
+        access_token = (redis_client.get("ACCESS_TOKEN")).decode()
+    except:
+        access_token = get_access_token()
+        redis_client.set("ACCESS_TOKEN", access_token, ex=7000)
+
+    # 先从缓存获取ticket
+    try:
+        js_ticket = redis_client.get("WEIXIN_JSAPI_TICKET").decode()
+    except:
+        js_ticket = get_weixin_jsapi_ticket(access_token)
+        redis_client.set("WEIXIN_JSAPI_TOKEN", js_ticket, ex=7000)
+
+    # 动态生成签名数据
+    noncestr = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(15))
+    timestamp = int(time.time())
+    data = {
+        "noncestr": noncestr,
+        "jsapi_ticket": js_ticket,
+        "timestamp": timestamp,
+        "url": url
+    }
+    sort_string = '&'.join(['%s=%s' % (key.lower(), data[key]) for key in sorted(data)])
+    data['signature'] = hashlib.sha1(sort_string.encode('utf-8')).hexdigest()
+    data['app_id'] = WEIXIN['app_id']
+    return data
 
 
 def create_menu():

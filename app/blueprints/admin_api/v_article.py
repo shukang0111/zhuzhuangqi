@@ -43,8 +43,8 @@ def delete_article_type():
 
 
 @bp_admin_api.route('/article_type/all/', methods=['GET'])
-def get_all_poster_type():
-    """查询所有海报分类"""
+def get_all_article_type():
+    """查询所有文章分类"""
     query = ArticleType.select().where(ArticleType.is_delete == 0)
     data = {
         "article_types": [article_type.to_dict() for article_type in query]

@@ -10,6 +10,8 @@ from ...utils.weixin_util import get_auth2_access_token, get_wx_user_detail
 @bp_user_api.route('/', methods=['GET'])
 def index():
     """小程序回调"""
+    print(request.path)
+    print(request.url)
     code = request.args.get("code")
     current_app.logger.info(code)
 
@@ -36,17 +38,11 @@ def index():
         "token": wx_user.gen_token()
     }
     return api_success_response(data)
-    # return render_template("index.html")
 
 
 @bp_user_api.route('/wx_user/', methods=['GET'])
 def get_wx_user_center_info():
     """查询微信用户个人信息"""
-    # openid = session.get("openid")
-
-    # wx_user = WXUser.get_by_openid(openid)
-    # wx_user = WXUser.select().where(WXUser.openid == openid).get()
-    # current_app.logger.info(wx_user.id)
     wx_user = g.wx_user
     data = {
         "wx_user": wx_user.to_dict()

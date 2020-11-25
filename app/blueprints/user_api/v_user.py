@@ -10,8 +10,7 @@ from ...utils.weixin_util import get_auth2_access_token, get_wx_user_detail
 @bp_user_api.route('/', methods=['GET'])
 def index():
     """小程序回调"""
-    print(request.path)
-    print(request.url)
+
     code = request.args.get("code")
     current_app.logger.info(code)
 

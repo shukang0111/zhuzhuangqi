@@ -96,12 +96,18 @@ def edit_article():
     return api_success_response({})
 
 
-@bp_admin_api.route('/article/list/', methods=['GET'])
-def get_article_list():
+@bp_admin_api.route('/article/list/<int:article_type_id>/', methods=['GET'])
+def get_article_list(article_type_id):
     """查询文章list"""
-    query = Article.select().where(Article.is_delete == 0)
+    article_type = ArticleType.get_by_id(article_type_id, code=1104)
+    item = article_type.to_dict()
+    query = Article.select().where(Article.article_type_id == article_type_id)
+    _articles = list()
+    for article in query:
+        _articles.append(article.to_dict())
+    item['articles'] = _articles
     data = {
-        "articles": [article.to_dict() for article in query]
+        "articles": item
     }
     return api_success_response(data)
 

@@ -17,7 +17,7 @@ from app.utils.aes_util import aes_crypto
 db = MySQLDatabase(
     'zhuzhuangqi',
     user='root',
-    password='root' or os.getenv('MYSQL_PASSWORD'),
+    password='' or os.getenv('MYSQL_PASSWORD'),
     host='127.0.0.1',
     port=3306,
     charset='utf8mb4'

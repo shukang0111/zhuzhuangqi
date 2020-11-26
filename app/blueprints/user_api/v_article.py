@@ -3,6 +3,16 @@ from ...api_utils import *
 from ...models import Article, ArticleType
 
 
+@bp_user_api.route('/article_type/all/', methods=['GET'])
+def get_all_article_type():
+    """查询所有文章分类"""
+    query = ArticleType.select().where(ArticleType.is_delete == 0)
+    data = {
+        "article_types": [article_type.to_dict() for article_type in query]
+    }
+    return api_success_response(data)
+
+
 @bp_user_api.route('/article/list/<int:article_type_id>/', methods=['GET'])
 def get_user_article_list(article_type_id):
     """公众号文章列表"""

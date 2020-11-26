@@ -26,7 +26,7 @@ def get_user_article_list(article_type_id):
         _articles.append(_article)
     item['article_list'] = _articles
     data = {
-        "articles": _articles
+        "articles": item
     }
     return api_success_response(data)
 

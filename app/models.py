@@ -529,4 +529,22 @@ class Share(BaseModel):
         )
 
 
-models = [Admin, WXUser, Banner, PosterType, Poster, PosterTheme, Article, Course, Video, Share]
+class Visitor(BaseModel):
+    """访客记录表"""
+    wx_user_id = IntegerField()
+    share_id = IntegerField(null=True)
+    visitor_wx_user_id = IntegerField()  # 访客用户id
+    visit_time = DateTimeField(default=datetime.now)
+
+    class Meta:
+        table_name = "visitor"
+
+    @classmethod
+    def new(cls, wx_user_id, visitor_wx_user_id):
+        return cls.create(
+            wx_user_id=wx_user_id,
+            visitor_wx_user_id=visitor_wx_user_id
+        )
+
+
+models = [Admin, WXUser, Banner, PosterType, Poster, PosterTheme, ArticleType, Article, Course, Video, Share, Visitor]

@@ -1,9 +1,10 @@
-from flask import request, g, current_app, session, render_template
+from flask import request, g, current_app
 
 from . import bp_user_api
 from ...api_utils import *
 from ...libs.kodo.kodo_api import KodoApi
-from ...models import WXUser
+from ...models import WXUser, Visitor
+from ...utils.calendar_util import calc_time
 from ...utils.weixin_util import get_auth2_access_token, get_wx_user_detail
 
 
@@ -80,8 +81,33 @@ def get_open_upload_file_tokens():
     return api_success_response(data)
 
 
-@bp_user_api.route('/share/count/', methods=['GET'])
+@bp_user_api.route('/share/count/', methods=['POST'])
 def count_share_times():
-    """统计分享次数"""
+    """用户点击分享链接"""
     pass
 
+
+@bp_user_api.route('/visitor/count/', methods=['GET'])
+def visitor_count():
+    """访客统计"""
+    wx_user = g.wx_user
+    query = Visitor.select().where(Visitor.wx_user_id == wx_user.id).order_by(Visitor.visit_time.desc())
+
+    _visitor = list()
+    for visitor in query:
+        item = visitor.to_dict()
+        v_wx_user = WXUser.select().where(WXUser.id == visitor.visitor_wx_user_id).get()
+        item['nickname'] = v_wx_user.nickname
+        item['phone'] = v_wx_user.phone
+        item['avatar'] = v_wx_user.avatar
+        _visitor.append(item)
+    total_count = query.count()
+    start_time, end_time = calc_time("today")
+    t_query = query.where(Visitor.visit_time.between(start_time, end_time))
+    today_count = t_query.count()
+    data = {
+        "today_count": today_count,
+        "total_count": total_count,
+        "visitors": _visitor
+    }
+    return api_success_response(data)

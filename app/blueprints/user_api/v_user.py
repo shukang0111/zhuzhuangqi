@@ -5,7 +5,7 @@ from ...api_utils import *
 from ...libs.kodo.kodo_api import KodoApi
 from ...models import WXUser, Visitor
 from ...utils.calendar_util import calc_time
-from ...utils.weixin_util import get_auth2_access_token, get_wx_user_detail
+from ...utils.weixin_util import get_auth2_access_token, get_wx_user_detail, get_weixin_sign
 
 
 @bp_user_api.route('/', methods=['GET'])
@@ -77,6 +77,17 @@ def get_open_upload_file_tokens():
     token_detail = KodoApi.get_file_upload_token(upload_list)
     data = {
         "token_detail": token_detail
+    }
+    return api_success_response(data)
+
+
+@bp_user_api.route('/')
+def get_weixin_ticket():
+    """前端获取js配置信息"""
+    url = "zzqapi.e-shigong.com" + request.full_path
+    weixin_sign = get_weixin_sign(url)
+    data = {
+        "weixin_sign": weixin_sign
     }
     return api_success_response(data)
 

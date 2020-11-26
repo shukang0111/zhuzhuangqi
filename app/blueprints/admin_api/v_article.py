@@ -59,7 +59,7 @@ def create_article():
     claim_args(1203, title, contents, cover_url, extra_add_count)
     claim_args_int(1204, extra_add_count)
     claim_args_str(1204, title, contents, cover_url)
-    Article.new(title, contents, cover_url, extra_add_count)
+    Article.new(article_type_id, title, contents, cover_url, extra_add_count)
     return api_success_response({})
 
 
@@ -105,7 +105,7 @@ def get_article_list(article_type_id):
     _articles = list()
     for article in query:
         _articles.append(article.to_dict())
-    item['articles'] = _articles
+    item['article_list'] = _articles
     data = {
         "articles": item
     }

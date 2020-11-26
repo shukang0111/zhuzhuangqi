@@ -429,8 +429,9 @@ class Article(BaseModel):
         table_name = "article"
 
     @classmethod
-    def new(cls, title, contents, cover_url, extra_add_count):
+    def new(cls, article_type_id, title, contents, cover_url, extra_add_count):
         return cls.create(
+            article_type_id=article_type_id,
             title=title,
             contents=contents,
             cover_url=cover_url,

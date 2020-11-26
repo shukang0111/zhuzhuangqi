@@ -21,9 +21,9 @@ def get_user_article_list(article_type_id):
     query = Article.select().where(Article.article_type_id == article_type_id, Article.is_delete == 0)
     _articles = list()
     for article in query:
-        item = article.to_dict()
-        item['total_use_count'] = item['real_use_count'] + item['extra_add_count']
-        _articles.append(item)
+        _article = article.to_dict()
+        _article['total_use_count'] = item['real_use_count'] + item['extra_add_count']
+        _articles.append(_article)
     item['article_list'] = _articles
     data = {
         "articles": _articles

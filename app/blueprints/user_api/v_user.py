@@ -3,8 +3,9 @@ from flask import request, g, current_app
 from . import bp_user_api
 from ...api_utils import *
 from ...libs.kodo.kodo_api import KodoApi
-from ...models import WXUser, Visitor
+from ...models import WXUser, Visitor, Share, Video
 from ...utils.calendar_util import calc_time
+from ...utils.share_util import update_share_times
 from ...utils.weixin_util import get_auth2_access_token, get_wx_user_detail, get_weixin_sign
 
 
@@ -81,10 +82,10 @@ def get_open_upload_file_tokens():
     return api_success_response(data)
 
 
-@bp_user_api.route('/')
+@bp_user_api.route('/weixin/js/auth/')
 def get_weixin_ticket():
     """前端获取js配置信息"""
-    url = "zzqapi.e-shigong.com" + request.full_path
+    url = g.json.get("url")
     weixin_sign = get_weixin_sign(url)
     data = {
         "weixin_sign": weixin_sign
@@ -95,7 +96,37 @@ def get_weixin_ticket():
 @bp_user_api.route('/share/count/', methods=['POST'])
 def count_share_times():
     """用户点击分享链接"""
-    pass
+    oid, cid, tid = map(request.args.get, ['openid', 'cid', 'tid'])
+    visitor_wx_user = g.wx_user
+    share_wx_user = WXUser.get_by_openid(int(oid))
+    try:
+        share = Share.select().where(Share.wx_user_id == share_wx_user.id, Share.tid == int(tid), Share.cid == cid).get()
+    except:
+        pass
+    else:
+        share.update_real_use_count()
+        Visitor.new(wx_user_id=share_wx_user.id, visitor_wx_user_id=visitor_wx_user.id, share_id=share.id)
+    item = update_share_times(cid, tid)
+    data = {
+        "wx_user": share_wx_user.to_dict(),
+        "info": item
+    }
+    return api_success_response(data)
+
+
+@bp_user_api.route('/share/video/list/', methods=['GET'])
+def get_user_share_video():
+    """获取用户我的视频"""
+    wx_user = g.wx_user
+    query = Share.select().where(Share.tid == 4, Share.wx_user_id == wx_user.id)
+    _videos = list()
+    for share in query:
+        video = Video.select().where(Video.id == share.cid).get()
+        _videos.append(video.to_dict())
+    data = {
+        "videos": _videos
+    }
+    return api_success_response(data)
 
 
 @bp_user_api.route('/visitor/count/', methods=['GET'])

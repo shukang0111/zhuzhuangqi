@@ -446,6 +446,10 @@ class Article(BaseModel):
         self.extra_add_count = extra_add_count
         return self.save_ut()
 
+    def update_real_use_count(self):
+        self.real_use_count += 1
+        return self.save_ut()
+
 
 class Course(BaseModel):
     """课程"""
@@ -504,6 +508,10 @@ class Video(BaseModel):
         self.extra_add_count = extra_add_count
         return self.save_ut()
 
+    def update_real_use_count(self):
+        self.real_use_count += 1
+        return self.save_ut()
+
 
 class Share(BaseModel):
     """用户分享相关"""
@@ -514,20 +522,25 @@ class Share(BaseModel):
         (4, "视频")
     )
     wx_user_id = IntegerField()  # 微信用户id
-    share_type = IntegerField(choices=SHARE_TYPE)  # 分享产品类型
-    share_type_id = IntegerField()  # 所属产品id（海报，文章，课堂，视频）
+    tid = IntegerField(choices=SHARE_TYPE)  # 分享产品类型
+    cid = IntegerField()  # 所属产品id（海报，文章，课堂，视频）
     share_time = DateTimeField(default=datetime.now)  # 分享时间
+    real_use_count = IntegerField(default=0)
 
     class Meta:
         table_name = "share"
 
     @classmethod
-    def new(cls, wx_user_id, share_type, share_type_id):
+    def new(cls, wx_user_id, tid, cid):
         return cls.create(
             wx_user_id=wx_user_id,
-            share_type=share_type,
-            share_type_id=share_type_id
+            tid=tid,
+            cid=cid
         )
+
+    def update_real_use_count(self):
+        self.real_use_count += 1
+        return self.save_ut()
 
 
 class Visitor(BaseModel):
@@ -541,10 +554,11 @@ class Visitor(BaseModel):
         table_name = "visitor"
 
     @classmethod
-    def new(cls, wx_user_id, visitor_wx_user_id):
+    def new(cls, wx_user_id, visitor_wx_user_id, share_id):
         return cls.create(
             wx_user_id=wx_user_id,
-            visitor_wx_user_id=visitor_wx_user_id
+            visitor_wx_user_id=visitor_wx_user_id,
+            share_id=share_id
         )
 
 

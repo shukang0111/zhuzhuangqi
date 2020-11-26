@@ -22,7 +22,7 @@ def get_user_article_list(article_type_id):
     _articles = list()
     for article in query:
         _article = article.to_dict()
-        _article['total_use_count'] = item['real_use_count'] + item['extra_add_count']
+        _article['total_use_count'] = _article['real_use_count'] + _article['extra_add_count']
         _articles.append(_article)
     item['article_list'] = _articles
     data = {

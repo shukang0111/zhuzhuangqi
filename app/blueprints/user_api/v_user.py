@@ -85,8 +85,10 @@ def get_open_upload_file_tokens():
 @bp_user_api.route('/weixin/js/auth/')
 def get_weixin_ticket():
     """前端获取js配置信息"""
-    url = g.json.get("url")
-    weixin_sign = get_weixin_sign(url)
+    zzq_url = "zzqapi.e-shigong.com"
+    url = request.full_path
+
+    weixin_sign = get_weixin_sign(zzq_url + url)
     data = {
         "weixin_sign": weixin_sign
     }

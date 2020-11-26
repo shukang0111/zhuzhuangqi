@@ -35,7 +35,7 @@ def delete_article_type():
     article_type_id = g.json.get("article_type_id")
     claim_args_int(1204, article_type_id)
     article_type = ArticleType.get_by_id(article_type_id, code=1104)
-    query = Article.select().where(Article.article_type_id == article_type_id)
+    query = Article.select().where(Article.article_type_id == article_type_id, Article.is_delete == 0)
     for article in query:
         article.update_delete(is_delete=1)
     article_type.update_delete(is_delete=1)
@@ -101,7 +101,7 @@ def get_article_list(article_type_id):
     """查询文章list"""
     article_type = ArticleType.get_by_id(article_type_id, code=1104)
     item = article_type.to_dict()
-    query = Article.select().where(Article.article_type_id == article_type_id)
+    query = Article.select().where(Article.article_type_id == article_type_id, Article.is_delete == 0)
     _articles = list()
     for article in query:
         _articles.append(article.to_dict())

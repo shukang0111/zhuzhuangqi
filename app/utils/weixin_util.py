@@ -90,12 +90,12 @@ def get_access_token() -> str:
 
 def get_weixin_jsapi_ticket(access_token):
     """获取jsapi_ticket，jsapi_ticket是公众号用于调用微信JS接口的临时票据"""
-    data = {
+    param = {
         'access_token': access_token,
         'type': 'jsapi'
     }
     url = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket'
-    resp = requests.post(url, data=data).json()
+    resp = requests.get(url, params=param).json()
     current_app.logger.info(resp)
     jsapi_ticket = resp.get("ticket")
     if not jsapi_ticket:
@@ -116,7 +116,7 @@ def get_weixin_sign(url):
         js_ticket = redis_client.get("WEIXIN_JSAPI_TICKET").decode()
     except:
         js_ticket = get_weixin_jsapi_ticket(access_token)
-        redis_client.set("WEIXIN_JSAPI_TOKEN", js_ticket, ex=7000)
+        redis_client.set("WEIXIN_JSAPI_TICKET", js_ticket, ex=7000)
 
     # 动态生成签名数据
     noncestr = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(15))

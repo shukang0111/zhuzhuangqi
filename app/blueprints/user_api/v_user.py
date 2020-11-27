@@ -97,6 +97,15 @@ def get_weixin_ticket():
     return api_success_response(data)
 
 
+@bp_user_api.route('/share/create/', methods=['POST'])
+def create_share():
+    """创建分享记录"""
+    cid, tid = map(g.json.get, ['cid', 'tid'])
+    wx_user = g.wx_user
+    Share.new(wx_user.id, tid, cid)
+    return api_success_response({})
+
+
 @bp_user_api.route('/share/count/', methods=['POST'])
 def count_share_times():
     """用户点击分享链接"""

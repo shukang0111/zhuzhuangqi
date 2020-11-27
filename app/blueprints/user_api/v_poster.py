@@ -39,8 +39,11 @@ def get_user_poster_list(poster_type_id):
 def get_user_poster_detail(poster_id):
     """公众号单个海报详情"""
     poster = Poster.get_by_id(poster_id, code=1104)
+    item = poster.to_dict()
+    item['tid'] = 1
+    item['cid'] = poster.id
     data = {
-        "poster": poster.to_dict()
+        "poster": item
     }
     return api_success_response(data)
 

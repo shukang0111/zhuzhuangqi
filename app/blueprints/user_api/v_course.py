@@ -22,7 +22,10 @@ def get_user_course_list():
 def get_user_course_detail(course_id):
     """查询单个课程详情"""
     course = Course.get_by_id(int(course_id), code=1104)
+    item = course.to_dict()
+    item['tid'] = 3
+    item['cid'] = course.id
     data = {
-        "course": course.to_dict()
+        "course": item
     }
     return api_success_response(data)

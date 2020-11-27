@@ -35,7 +35,10 @@ def get_user_article_list(article_type_id):
 def get_user_article_detail(article_id):
     """公众号单个文章详情"""
     article = Article.get_by_id(article_id, code=1104)
+    item = article.to_dict()
+    item['tid'] = 2
+    item['cid'] = article.id
     data = {
-        "article": article.to_dict()
+        "article": item
     }
     return api_success_response(data)

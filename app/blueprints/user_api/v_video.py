@@ -22,7 +22,10 @@ def get_user_video_list():
 def get_user_video_detail(video_id):
     """查询单个视频详情"""
     video = Video.get_by_id(int(video_id), code=1104)
+    item = video.to_dict()
+    item['tid'] = 4
+    item['cid'] = video.id
     data = {
-        "video": video.to_dict()
+        "video": item
     }
     return api_success_response(data)

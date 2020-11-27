@@ -100,6 +100,7 @@ def get_weixin_ticket():
 @bp_user_api.route('/share/count/', methods=['POST'])
 def count_share_times():
     """用户点击分享链接"""
+    current_app.logger.info(request.full_path)
     oid, cid, tid = map(request.args.get, ['openid', 'cid', 'tid'])
     visitor_wx_user = g.wx_user
     share_wx_user = WXUser.get_by_openid(int(oid))

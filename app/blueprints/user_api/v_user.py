@@ -21,7 +21,7 @@ def index():
     openid = item.get("openid")
     current_app.logger.info("openid")
     user_info = get_wx_user_detail(access_token, openid)
-    nickname = user_info.get("nickname")
+    nickname = user_info.get("nickname").encode('iso-8859-1').decode('utf-8')
     headimgurl = user_info.get("headimgurl")
     try:
         wx_user = WXUser.get_by_openid(openid)

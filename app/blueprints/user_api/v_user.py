@@ -94,6 +94,7 @@ def get_weixin_ticket():
     data = {
         "weixin_sign": weixin_sign
     }
+    current_app.logger.info(data)
     return api_success_response(data)
 
 

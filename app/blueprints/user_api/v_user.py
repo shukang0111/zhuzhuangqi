@@ -204,7 +204,7 @@ def get_user_share_article():
             "real_use_count": None,
             "extra_add_count": None
         }
-        item['video'] = _article
+        item['article'] = _article
         share_articles.append(item)
     else:
         for share in query:

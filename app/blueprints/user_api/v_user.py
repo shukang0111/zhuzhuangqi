@@ -137,25 +137,25 @@ def get_user_share_video():
     wx_user = g.wx_user
     query = Share.select().where(Share.tid == 4, Share.wx_user_id == wx_user.id, Share.is_delete == 0)
     share_videos = list()
-    if not query.count():
-        item = dict()
-        _video = {
-            "id": None,
-            "video_title": '',
-            "video_url": '',
-            "cover_url": '',
-            "real_use_count": None,
-            "extra_add_count": None
-        }
-        item['video'] = _video
+    # if not query.count():
+    #     item = dict()
+    #     _video = {
+    #         "id": None,
+    #         "video_title": '',
+    #         "video_url": '',
+    #         "cover_url": '',
+    #         "real_use_count": None,
+    #         "extra_add_count": None
+    #     }
+    #     item['video'] = _video
+    #     share_videos.append(item)
+    # else:
+    for share in query:
+        item = share.to_dict()
+        video = Video.select().where(Video.id == share.cid).get()
+        item['video'] = video.to_dict()
+        item['total_use_count'] = share.real_use_count
         share_videos.append(item)
-    else:
-        for share in query:
-            item = share.to_dict()
-            video = Video.select().where(Video.id == share.cid).get()
-            item['video'] = video.to_dict()
-            item['total_use_count'] = share.real_use_count + video.extra_add_count
-            share_videos.append(item)
     data = {
         "videos": share_videos
     }
@@ -194,26 +194,26 @@ def get_user_share_article():
     wx_user = g.wx_user
     query = Share.select().where(Share.tid == 2, Share.wx_user_id == wx_user.id, Share.is_delete == 0)
     share_articles = list()
-    if not query.count():
-        item = dict()
-        _article = {
-            "id": None,
-            "article_type_id": None,
-            "title": '',
-            "contents": "'",
-            "cover_url": '',
-            "real_use_count": None,
-            "extra_add_count": None
-        }
-        item['article'] = _article
+    # if not query.count():
+    #     item = dict()
+    #     _article = {
+    #         "id": None,
+    #         "article_type_id": None,
+    #         "title": '',
+    #         "contents": "'",
+    #         "cover_url": '',
+    #         "real_use_count": None,
+    #         "extra_add_count": None
+    #     }
+    #     item['article'] = _article
+    #     share_articles.append(item)
+    # else:
+    for share in query:
+        item = share.to_dict()
+        article = Article.select().where(Article.id == share.cid).get()
+        item['article'] = article.to_dict()
         share_articles.append(item)
-    else:
-        for share in query:
-            item = share.to_dict()
-            article = Article.select().where(Article.id == share.cid).get()
-            item['article'] = article.to_dict()
-            share_articles.append(item)
-            item['total_use_count'] = share.real_use_count + article.extra_add_count
+        item['total_use_count'] = share.real_use_count
     data = {
         "articles": share_articles
     }

@@ -88,7 +88,7 @@ def get_weixin_ticket():
     # url = request.args.get('url')
     # zzq_url = "https://zzqapi.e-shigong.com"
     # url = request.full_path
-    url = "{}://{}{}".format(request.protocol, request.host, request.uri)
+    url = "https://{}{}".format(request.host, request.uri)
     current_app.logger.info(url)
     wx_user = g.wx_user
 

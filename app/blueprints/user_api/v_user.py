@@ -134,13 +134,15 @@ def count_share_times():
 def get_user_share_video():
     """获取用户我的视频"""
     wx_user = g.wx_user
-    query = Share.select().where(Share.tid == 4, Share.wx_user_id == wx_user.id)
-    _videos = list()
+    query = Share.select().where(Share.tid == 4, Share.wx_user_id == wx_user.id, Share.is_delete == 0)
+    share_videos = list()
     for share in query:
+        item = share.to_dict()
         video = Video.select().where(Video.id == share.cid).get()
-        _videos.append(video.to_dict())
+        item['video'] = video.to_dict()
+        share_videos.append(item)
     data = {
-        "videos": _videos
+        "videos": share_videos
     }
     return api_success_response(data)
 
@@ -175,12 +177,24 @@ def visitor_count():
 def get_user_share_article():
     """个人中心我的文章"""
     wx_user = g.wx_user
-    query = Share.select().where(Share.tid == 2, Share.wx_user_id == wx_user.id)
-    _articles = list()
+    query = Share.select().where(Share.tid == 2, Share.wx_user_id == wx_user.id, Share.is_delete == 0)
+    share_articles = list()
     for share in query:
+        item = share.to_dict()
         article = Article.select().where(Article.id == share.cid).get()
-        _articles.append(article.to_dict())
+        item['article'] = article.to_dict()
+        share_articles.append(item)
     data = {
-        "articles": _articles
+        "articles": share_articles
     }
     return api_success_response(data)
+
+
+@bp_user_api.route('/share/delete/', methods=['POST'])
+def delete_share_video():
+    """删除个人中心我的视频/文章"""
+    share_id = g.json.get("share_id")
+    share = Share.get_by_id(share_id, code=1104)
+    share.update_delete(is_delete=1)
+    return api_success_response({})
+

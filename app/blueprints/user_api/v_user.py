@@ -89,8 +89,8 @@ def get_weixin_ticket():
     zzq_url = "https://zzqapi.e-shigong.com"
     url = request.full_path
     wx_user = g.wx_user
-
-    weixin_sign = get_weixin_sign(url)
+    current_app.logger.info(request.headers.get('HTTP_REFERER'))
+    weixin_sign = get_weixin_sign(zzq_url + url)
     weixin_sign['oid'] = wx_user.openid
     data = {
         "weixin_sign": weixin_sign

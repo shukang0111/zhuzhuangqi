@@ -86,11 +86,13 @@ def get_open_upload_file_tokens():
 def get_weixin_ticket():
     """前端获取js配置信息"""
     # url = request.args.get('url')
-    zzq_url = "https://zzqapi.e-shigong.com"
-    url = request.full_path
+    # zzq_url = "https://zzqapi.e-shigong.com"
+    # url = request.full_path
+    url = "{}://{}{}".format(request.protocol, request.host, request.uri)
+    current_app.logger.info(url)
     wx_user = g.wx_user
 
-    weixin_sign = get_weixin_sign(zzq_url + url)
+    weixin_sign = get_weixin_sign(url)
     weixin_sign['oid'] = wx_user.openid
     data = {
         "weixin_sign": weixin_sign

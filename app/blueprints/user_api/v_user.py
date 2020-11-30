@@ -140,6 +140,7 @@ def get_user_share_video():
         item = share.to_dict()
         video = Video.select().where(Video.id == share.cid).get()
         item['video'] = video.to_dict()
+        item['total_use_count'] = share.real_use_count + video.extra_add_count
         share_videos.append(item)
     data = {
         "videos": share_videos
@@ -184,6 +185,7 @@ def get_user_share_article():
         article = Article.select().where(Article.id == share.cid).get()
         item['article'] = article.to_dict()
         share_articles.append(item)
+        item['total_use_count'] = share.real_use_count + article.extra_add_count
     data = {
         "articles": share_articles
     }

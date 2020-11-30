@@ -138,7 +138,15 @@ def get_user_share_video():
     share_videos = list()
     if not query.count():
         item = dict()
-        item['video'] = dict()
+        _video = {
+            "id": None,
+            "video_title": '',
+            "video_url": '',
+            "cover_url": '',
+            "real_use_count": None,
+            "extra_add_count": None
+        }
+        item['video'] = _video
         share_videos.append(item)
     else:
         for share in query:
@@ -187,7 +195,16 @@ def get_user_share_article():
     share_articles = list()
     if not query.count():
         item = dict()
-        item['video'] = {}
+        _article = {
+            "id": None,
+            "article_type_id": None,
+            "title": '',
+            "contents": "'",
+            "cover_url": '',
+            "real_use_count": None,
+            "extra_add_count": None
+        }
+        item['video'] = _article
         share_articles.append(item)
     else:
         for share in query:

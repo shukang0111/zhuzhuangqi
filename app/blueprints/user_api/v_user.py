@@ -3,7 +3,7 @@ from flask import request, g, current_app
 from . import bp_user_api
 from ...api_utils import *
 from ...libs.kodo.kodo_api import KodoApi
-from ...models import WXUser, Visitor, Share, Video
+from ...models import WXUser, Visitor, Share, Video, Article
 from ...utils.calendar_util import calc_time
 from ...utils.share_util import update_share_times
 from ...utils.weixin_util import get_auth2_access_token, get_wx_user_detail, get_weixin_sign
@@ -167,5 +167,20 @@ def visitor_count():
         "today_count": today_count,
         "total_count": total_count,
         "visitors": _visitor
+    }
+    return api_success_response(data)
+
+
+@bp_user_api.route('/share/article/list/', methods=['GET'])
+def get_user_share_article():
+    """个人中心我的文章"""
+    wx_user = g.wx_user
+    query = Share.select().where(Share.tid == 2, Share.wx_user_id == wx_user.id)
+    _articles = list()
+    for share in query:
+        article = Article.select().where(Article.id == share.cid).get()
+        _articles.append(article.to_dict())
+    data = {
+        "articles": _articles
     }
     return api_success_response(data)

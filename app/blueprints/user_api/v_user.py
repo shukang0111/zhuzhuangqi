@@ -115,7 +115,7 @@ def count_share_times():
     current_app.logger.info(request.full_path)
     oid, cid, tid = map(request.args.get, ['openid', 'cid', 'tid'])
     visitor_wx_user = g.wx_user
-    share_wx_user = WXUser.get_by_openid(int(oid))
+    share_wx_user = WXUser.get_by_openid(oid)
     try:
         share = Share.select().where(Share.wx_user_id == share_wx_user.id, Share.tid == int(tid), Share.cid == cid).get()
     except:

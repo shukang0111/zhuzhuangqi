@@ -109,7 +109,7 @@ def create_share():
     return api_success_response({})
 
 
-@bp_user_api.route('/share/count/', methods=['POST'])
+@bp_user_api.route('/share/count/', methods=['GET'])
 def count_share_times():
     """用户点击分享链接"""
     current_app.logger.info(request.full_path)

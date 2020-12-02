@@ -15,30 +15,30 @@ def index():
 
     code = request.args.get("code")
     current_app.logger.info(code)
-
-    item = get_auth2_access_token(code)
-    access_token = item.get("access_token")
-    openid = item.get("openid")
-    current_app.logger.info("openid")
-    user_info = get_wx_user_detail(access_token, openid)
-    nickname = user_info.get("nickname").encode('iso-8859-1').decode('utf-8')
-    headimgurl = user_info.get("headimgurl")
-    try:
-        wx_user = WXUser.get_by_openid(openid)
-        wx_user.nickname = nickname
-        wx_user.avatar = headimgurl
-        wx_user.save()
-        current_app.logger.info("1_{}".format(wx_user.to_dict()))
-    except:
-        wx_user = WXUser.new(openid, headimgurl, nickname)
-        current_app.logger.info("2_{}".format(wx_user.to_dict()))
+    if code:
+        item = get_auth2_access_token(code)
+        access_token = item.get("access_token")
+        openid = item.get("openid")
+        current_app.logger.info("openid")
+        user_info = get_wx_user_detail(access_token, openid)
+        nickname = user_info.get("nickname").encode('iso-8859-1').decode('utf-8')
+        headimgurl = user_info.get("headimgurl")
+        try:
+            wx_user = WXUser.get_by_openid(openid)
+            wx_user.nickname = nickname
+            wx_user.avatar = headimgurl
+            wx_user.save()
+            current_app.logger.info("1_{}".format(wx_user.to_dict()))
+        except:
+            wx_user = WXUser.new(openid, headimgurl, nickname)
+            current_app.logger.info("2_{}".format(wx_user.to_dict()))
     # session['openid'] = openid
     # current_app.logger.info(openid)
 
-    data = {
-        "token": wx_user.gen_token()
-    }
-    return api_success_response(data)
+    # data = {
+    #     "token": wx_user.gen_token()
+    # }
+    return api_success_response({})
 
 
 @bp_user_api.route('/wx_user/', methods=['GET'])

@@ -38,13 +38,15 @@ def index():
     # data = {
     #     "token": wx_user.gen_token()
     # }
-    return redirect('https://zzqapi.e-shigong.com/')
+    return api_success_response({})
 
 
 @bp_user_api.route('/wx_user/', methods=['GET'])
 def get_wx_user_center_info():
     """查询微信用户个人信息"""
-    wx_user = g.wx_user
+    # wx_user = g.wx_user
+    openid = session.get('openid')
+    wx_user = WXUser.get_by_openid(openid)
     data = {
         "wx_user": wx_user.to_dict()
     }

@@ -56,7 +56,7 @@ def edit_wx_user_info():
     """个人中心信息更新"""
     wx_user_id, avatar, nickname, qr_code_url, phone, wx_number = map(g.json.get, ['wx_user_id', 'avatar', 'nickname',
                                                                                    'qr_code_url', 'phone', 'wx_number'])
-    claim_args(1203, wx_user_id, avatar, nickname, qr_code_url, phone, wx_number)
+    claim_args(1203, wx_user_id)
     claim_args_int(1204, wx_user_id)
     claim_args_str(1204, avatar, nickname, qr_code_url, phone, wx_number)
     wx_user = WXUser.get_by_id(wx_user_id, code=1104)

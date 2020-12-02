@@ -34,6 +34,7 @@ def index():
             current_app.logger.info("2_{}".format(wx_user.to_dict()))
         session['openid'] = openid
         current_app.logger.info(openid)
+        current_app.logger.info(request.referrer)
 
     # data = {
     #     "token": wx_user.gen_token()

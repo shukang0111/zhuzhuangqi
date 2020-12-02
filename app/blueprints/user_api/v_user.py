@@ -1,4 +1,4 @@
-from flask import request, g, current_app
+from flask import request, g, current_app, redirect
 
 from . import bp_user_api
 from ...api_utils import *
@@ -38,7 +38,7 @@ def index():
     # data = {
     #     "token": wx_user.gen_token()
     # }
-    return api_success_response({})
+    return redirect('https://zzqapi.e-shigong.com/')
 
 
 @bp_user_api.route('/wx_user/', methods=['GET'])

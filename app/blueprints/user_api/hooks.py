@@ -36,20 +36,21 @@ def user_authentication():
             return redirect(get_auth_url(redirect_url))
         else:
             pass
-            # item = get_auth2_access_token(code)
-            # access_token = item.get("access_token")
-            # openid = item.get("openid")
-            # current_app.logger.info("openid")
-            # user_info = get_wx_user_detail(access_token, openid)
-            # nickname = user_info.get("nickname").encode('iso-8859-1').decode('utf-8')
-            # headimgurl = user_info.get("headimgurl")
-            # try:
-            #     wx_user = WXUser.get_by_openid(openid)
-            #     wx_user.nickname = nickname
-            #     wx_user.avatar = headimgurl
-            #     wx_user.save()
-            #     current_app.logger.info("1_{}".format(wx_user.to_dict()))
-            # except:
-            #     wx_user = WXUser.new(openid, headimgurl, nickname)
-            #     current_app.logger.info("2_{}".format(wx_user.to_dict()))
+            item = get_auth2_access_token(code)
+            access_token = item.get("access_token")
+            openid = item.get("openid")
+            current_app.logger.info("openid")
+            user_info = get_wx_user_detail(access_token, openid)
+            nickname = user_info.get("nickname").encode('iso-8859-1').decode('utf-8')
+            headimgurl = user_info.get("headimgurl")
+            try:
+                wx_user = WXUser.get_by_openid(openid)
+                wx_user.nickname = nickname
+                wx_user.avatar = headimgurl
+                wx_user.save()
+                current_app.logger.info("1_{}".format(wx_user.to_dict()))
+            except:
+                wx_user = WXUser.new(openid, headimgurl, nickname)
+                current_app.logger.info("2_{}".format(wx_user.to_dict()))
+            session['openid'] = openid
     return

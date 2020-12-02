@@ -1,4 +1,4 @@
-from flask import request, g, current_app, redirect
+from flask import request, g, current_app, redirect, session
 
 from . import bp_user_api
 from ...api_utils import *
@@ -32,8 +32,8 @@ def index():
         except:
             wx_user = WXUser.new(openid, headimgurl, nickname)
             current_app.logger.info("2_{}".format(wx_user.to_dict()))
-    # session['openid'] = openid
-    # current_app.logger.info(openid)
+        session['openid'] = openid
+        current_app.logger.info(openid)
 
     # data = {
     #     "token": wx_user.gen_token()

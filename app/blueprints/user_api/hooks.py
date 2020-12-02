@@ -13,7 +13,7 @@ def user_authentication():
     :return:
     """
     # g.wx_user = None
-    if request.endpoint.split('.')[-1] in ["get_open_upload_file_tokens", "index"]:
+    if request.endpoint.split('.')[-1] in ["get_open_upload_file_tokens"]:
         return
     # # current_app.logger.info('{}-{}'.format(request.headers, request.full_path))
     # # wx_user = WXUser.select().where(WXUser.id.in_([23, 24])).get()

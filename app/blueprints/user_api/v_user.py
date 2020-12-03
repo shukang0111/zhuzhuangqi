@@ -93,13 +93,13 @@ def get_weixin_ticket():
     url = request.full_path
     # wx_user = g.wx_user
     openid = session.get('openid')
-    wx_user = WXUser.get_by_openid(openid)
-    wx_url = zzq_url + url
-    # wx_url = request.headers.get('Referer')
+    # wx_user = WXUser.get_by_openid(openid)
+    # wx_url = zzq_url + url
+    wx_url = request.headers.get('Referer')
     current_app.logger.info(request.headers.get('Referer'))
     current_app.logger.info('wx_url')
     weixin_sign = get_weixin_sign(wx_url)
-    weixin_sign['oid'] = wx_user.openid
+    weixin_sign['oid'] = openid
     data = {
         "weixin_sign": weixin_sign
     }

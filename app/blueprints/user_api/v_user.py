@@ -94,7 +94,8 @@ def get_weixin_ticket():
     # wx_user = g.wx_user
     openid = session.get('openid')
     wx_user = WXUser.get_by_openid(openid)
-    wx_url = request.headers.get('Referer')
+    wx_url = zzq_url + url + '&oid=' + openid
+    # wx_url = request.headers.get('Referer')
     current_app.logger.info(request.headers.get('Referer'))
     weixin_sign = get_weixin_sign(wx_url)
     weixin_sign['oid'] = wx_user.openid

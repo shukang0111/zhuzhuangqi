@@ -39,8 +39,7 @@ def index():
     # data = {
     #     "token": wx_user.gen_token()
     # }
-    # return api_success_response({})
-    return render_template('index.html')
+    return redirect('https://zzqapi.e-shigong.com/')
 
 
 @bp_user_api.route('/wx_user/', methods=['GET'])

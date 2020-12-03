@@ -51,9 +51,9 @@ def get_user_poster_detail(poster_id):
 @bp_user_api.route('/poster_theme/list/', methods=['GET'])
 def get_user_poster_theme_list():
     """微信个人海报列表"""
-    # openid = session.get("openid")
-    # wx_user = WXUser.get_by_openid(openid)
-    wx_user = g.wx_user
+    openid = session.get("openid")
+    wx_user = WXUser.get_by_openid(openid)
+    # wx_user = g.wx_user
     query = PosterTheme.select().where(PosterTheme.wx_user_id == wx_user.id, PosterTheme.is_delete == 0).\
         order_by(PosterTheme.weight.desc())
     _poster_thmes = list()

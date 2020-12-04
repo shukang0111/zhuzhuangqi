@@ -15,6 +15,7 @@ __all__ = [
     'handle_403_error',
     'handle_404_error',
     'before_api_request',
+    'after_api_request',
     'api_success_response',
     'claim_args',
     'claim_args_true',
@@ -122,6 +123,14 @@ def before_api_request() -> None:
         else:
             current_app.logger.info('JSON -> {0}: {1}'.format(request.endpoint, g.json))
 
+
+def after_api_request(resp):
+    """api请求后勾子函数"""
+    resp = make_response(resp)
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Methods'] = 'GET,POST'
+    resp.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type, XMLHttpRequest, x-csrftoken'
+    return resp
 
 def api_success_response(data: object) -> object:
     """API请求成功的响应"""

@@ -128,9 +128,10 @@ def after_api_request(resp):
     """api请求后勾子函数"""
     resp = make_response(resp)
     resp.headers['Access-Control-Allow-Origin'] = '*'
-    resp.headers['Access-Control-Allow-Methods'] = 'GET,POST'
+    resp.headers['Access-Control-Allow-Methods'] = 'GET,POST,OPTIONS,DELETE,PUT'
     resp.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type, XMLHttpRequest, x-csrftoken'
     return resp
+
 
 def api_success_response(data: object) -> object:
     """API请求成功的响应"""

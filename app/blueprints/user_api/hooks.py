@@ -29,7 +29,8 @@ def user_authentication():
     openid = session.get("openid")
     current_app.logger.info(openid)
     code = request.args.get("code")
-    redirect_url = request.url
+    # redirect_url = request.url
+    redirect_url = 'https://zzqapi.e-shigong.com/'
     current_app.logger.info("{0}_{1}".format(code, redirect_url))
     current_app.logger.info(request.referrer)
     if not openid:

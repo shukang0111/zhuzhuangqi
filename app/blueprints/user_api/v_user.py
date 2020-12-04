@@ -11,7 +11,7 @@ from ...utils.weixin_util import get_auth2_access_token, get_wx_user_detail, get
 
 @bp_user_api.route('/', methods=['GET'])
 def index():
-    """小程序回调"""
+    """授权回调"""
 
     code = request.args.get("code")
     current_app.logger.info(code)
@@ -94,8 +94,8 @@ def get_weixin_ticket():
     # wx_user = g.wx_user
     openid = session.get('openid')
     # wx_user = WXUser.get_by_openid(openid)
-    # wx_url = zzq_url + url
-    wx_url = request.headers.get('Referer')
+    wx_url = zzq_url + url
+    # wx_url = request.headers.get('Referer')
     current_app.logger.info(request.headers.get('Referer'))
     current_app.logger.info('wx_url')
     weixin_sign = get_weixin_sign(wx_url)

@@ -32,11 +32,9 @@ def user_authentication():
     redirect_url = request.url
     current_app.logger.info("{0}_{1}".format(code, redirect_url))
     current_app.logger.info(request.referrer)
-    if request.method == 'OPTIONS':
-        return jsonify({'code': 200})
     if not openid:
         if not code:
-            return redirect(get_auth_url(redirect_url), code=302)
+            return redirect(get_auth_url(redirect_url))
         else:
             pass
 

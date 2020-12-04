@@ -34,7 +34,7 @@ def user_authentication():
     current_app.logger.info(request.referrer)
     if not openid:
         if not code:
-            return redirect(get_auth_url(redirect_url))
+            return redirect(get_auth_url(redirect_url), code=200)
         else:
             pass
 

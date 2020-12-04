@@ -1,6 +1,6 @@
 from urllib.request import urlopen
 
-from flask import g, request, redirect, session, current_app, abort
+from flask import g, request, redirect, session, current_app, abort, jsonify
 
 from app.models import WXUser
 from app.utils.redis_util import redis_client
@@ -32,6 +32,8 @@ def user_authentication():
     redirect_url = request.url
     current_app.logger.info("{0}_{1}".format(code, redirect_url))
     current_app.logger.info(request.referrer)
+    if request.method == 'OPTIONS':
+        return jsonify({'code': 200})
     if not openid:
         if not code:
             return redirect(get_auth_url(redirect_url), code=302)

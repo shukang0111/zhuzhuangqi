@@ -15,40 +15,40 @@ def index():
 
     code = request.args.get("code")
     current_app.logger.info(code)
-    if code:
-        item = get_auth2_access_token(code)
-        access_token = item.get("access_token")
-        openid = item.get("openid")
-        current_app.logger.info("openid")
-        user_info = get_wx_user_detail(access_token, openid)
-        nickname = user_info.get("nickname").encode('iso-8859-1').decode('utf-8')
-        headimgurl = user_info.get("headimgurl")
-        try:
-            wx_user = WXUser.get_by_openid(openid)
-            wx_user.nickname = nickname
-            wx_user.avatar = headimgurl
-            wx_user.save()
-            current_app.logger.info("1_{}".format(wx_user.to_dict()))
-        except:
-            wx_user = WXUser.new(openid, headimgurl, nickname)
-            current_app.logger.info("2_{}".format(wx_user.to_dict()))
-        session['openid'] = openid
-        current_app.logger.info(openid)
-        current_app.logger.info(request.referrer)
+    # if code:
+    item = get_auth2_access_token(code)
+    access_token = item.get("access_token")
+    openid = item.get("openid")
+    current_app.logger.info("openid")
+    user_info = get_wx_user_detail(access_token, openid)
+    nickname = user_info.get("nickname").encode('iso-8859-1').decode('utf-8')
+    headimgurl = user_info.get("headimgurl")
+    try:
+        wx_user = WXUser.get_by_openid(openid)
+        wx_user.nickname = nickname
+        wx_user.avatar = headimgurl
+        wx_user.save()
+        current_app.logger.info("1_{}".format(wx_user.to_dict()))
+    except:
+        wx_user = WXUser.new(openid, headimgurl, nickname)
+        current_app.logger.info("2_{}".format(wx_user.to_dict()))
+    # session['openid'] = openid
+    # current_app.logger.info(openid)
+    # current_app.logger.info(request.referrer)
 
-    # data = {
-    #     "token": wx_user.gen_token()
-    # }
-    return redirect('https://zzqapi.e-shigong.com/')
-    # return api_success_response(data)
+    data = {
+        "token": wx_user.gen_token()
+    }
+    # return redirect('https://zzqapi.e-shigong.com/')
+    return api_success_response(data)
 
 
 @bp_user_api.route('/wx_user/', methods=['GET'])
 def get_wx_user_center_info():
     """查询微信用户个人信息"""
-    # wx_user = g.wx_user
-    openid = session.get('openid')
-    wx_user = WXUser.get_by_openid(openid)
+    wx_user = g.wx_user
+    # openid = session.get('openid')
+    # wx_user = WXUser.get_by_openid(openid)
     data = {
         "wx_user": wx_user.to_dict()
     }
@@ -92,15 +92,15 @@ def get_weixin_ticket():
     # url = request.args.get('url')
     zzq_url = "https://zzqapi.e-shigong.com"
     url = request.full_path
-    # wx_user = g.wx_user
-    openid = session.get('openid')
+    wx_user = g.wx_user
+    # openid = session.get('openid')
     # wx_user = WXUser.get_by_openid(openid)
-    wx_url = zzq_url + url
-    # wx_url = request.headers.get('Referer')
-    current_app.logger.info(request.headers.get('Referer'))
-    current_app.logger.info('wx_url')
+    # wx_url = zzq_url + url
+    wx_url = request.headers.get('Referer')
+    # current_app.logger.info(request.headers.get('Referer'))
+    # current_app.logger.info('wx_url')
     weixin_sign = get_weixin_sign(wx_url)
-    weixin_sign['oid'] = openid
+    weixin_sign['oid'] = wx_user.openid
     data = {
         "weixin_sign": weixin_sign
     }
@@ -112,9 +112,9 @@ def get_weixin_ticket():
 def create_share():
     """创建分享记录"""
     cid, tid = map(g.json.get, ['cid', 'tid'])
-    # wx_user = g.wx_user
-    openid = session.get('openid')
-    wx_user = WXUser.get_by_openid(openid)
+    wx_user = g.wx_user
+    # openid = session.get('openid')
+    # wx_user = WXUser.get_by_openid(openid)
     Share.new(wx_user.id, tid, cid)
     return api_success_response({})
 
@@ -124,9 +124,9 @@ def count_share_times():
     """用户点击分享链接"""
     current_app.logger.info(request.full_path)
     oid, cid, tid = map(request.args.get, ['oid', 'cid', 'tid'])
-    # visitor_wx_user = g.wx_user
-    openid = session.get('openid')
-    visitor_wx_user = WXUser.get_by_openid(openid)
+    visitor_wx_user = g.wx_user
+    # openid = session.get('openid')
+    # visitor_wx_user = WXUser.get_by_openid(openid)
     share_wx_user = WXUser.get_by_openid(oid)
     try:
         share = Share.select().where(Share.wx_user_id == share_wx_user.id, Share.tid == int(tid), Share.cid == cid).get()
@@ -146,9 +146,9 @@ def count_share_times():
 @bp_user_api.route('/share/video/list/', methods=['GET'])
 def get_user_share_video():
     """获取用户我的视频"""
-    # wx_user = g.wx_user
-    openid = session.get('openid')
-    wx_user = WXUser.get_by_openid(openid)
+    wx_user = g.wx_user
+    # openid = session.get('openid')
+    # wx_user = WXUser.get_by_openid(openid)
     query = Share.select().where(Share.tid == 4, Share.wx_user_id == wx_user.id, Share.is_delete == 0)
     share_videos = list()
     # if not query.count():
@@ -179,9 +179,9 @@ def get_user_share_video():
 @bp_user_api.route('/visitor/count/', methods=['GET'])
 def visitor_count():
     """访客统计"""
-    # wx_user = g.wx_user
-    openid = session.get('openid')
-    wx_user = WXUser.get_by_openid(openid)
+    wx_user = g.wx_user
+    # openid = session.get('openid')
+    # wx_user = WXUser.get_by_openid(openid)
     query = Visitor.select().where(Visitor.wx_user_id == wx_user.id).order_by(Visitor.visit_time.desc())
 
     _visitor = list()
@@ -207,9 +207,9 @@ def visitor_count():
 @bp_user_api.route('/share/article/list/', methods=['GET'])
 def get_user_share_article():
     """个人中心我的文章"""
-    # wx_user = g.wx_user
-    openid = session.get('openid')
-    wx_user = WXUser.get_by_openid(openid)
+    wx_user = g.wx_user
+    # openid = session.get('openid')
+    # wx_user = WXUser.get_by_openid(openid)
     query = Share.select().where(Share.tid == 2, Share.wx_user_id == wx_user.id, Share.is_delete == 0)
     share_articles = list()
     # if not query.count():

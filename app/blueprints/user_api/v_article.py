@@ -19,7 +19,7 @@ def get_all_article_type():
     query = ArticleType.select().where(ArticleType.is_delete == 0, ArticleType.show == 1)
     for _article_type in query:
         item = _article_type.to_dict()
-        for item['id'] in selected_article_type_ids:
+        if item['id'] in selected_article_type_ids:
             item['is_selected'] = 1
         else:
             item['is_selected'] = 0

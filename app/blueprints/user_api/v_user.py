@@ -172,18 +172,18 @@ def visitor_count():
     query = Visitor.select().where(Visitor.wx_user_id == wx_user.id).order_by(Visitor.visit_time.desc())
 
     _visitor = list()
-    _visitor_ids = list()
+    _visitor_user_ids = list()
     for visitor in query:
-        if visitor.id in _visitor_ids:
-            continue
         item = visitor.to_dict()
         v_wx_user = WXUser.select().where(WXUser.id == visitor.visitor_wx_user_id).get()
+        if v_wx_user.id in _visitor_user_ids:
+            continue
         item['nickname'] = v_wx_user.nickname
         item['phone'] = v_wx_user.phone
         item['avatar'] = v_wx_user.avatar
         _visitor.append(item)
-        _visitor_ids.append(visitor.id)
-    total_count = len(_visitor_ids)
+        _visitor_user_ids.append(visitor.id)
+    total_count = len(_visitor_user_ids)
     start_time, end_time = calc_time("today")
     t_query = query.where(Visitor.visit_time.between(start_time, end_time))
     today_count = len(list(set([v.id for v in t_query])))

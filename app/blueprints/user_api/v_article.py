@@ -1,3 +1,5 @@
+from flask import g
+
 from . import bp_user_api
 from ...api_utils import *
 from ...models import Article, ArticleType
@@ -6,9 +8,23 @@ from ...models import Article, ArticleType
 @bp_user_api.route('/article_type/all/', methods=['GET'])
 def get_all_article_type():
     """查询所有文章分类"""
+    # 用户选择的分类
+    user = g.wx_user
+    selected_article_type_ids = list()
+    for article_type in user.article_types:
+        selected_article_type_ids.append(article_type.id)
+
+    # 所有分类
     query = ArticleType.select().where(ArticleType.is_delete == 0, ArticleType.show == 1)
+    for _article_type in query:
+        item = _article_type.to_dict()
+        for item['id'] in selected_article_type_ids:
+            item['is_selected'] = 1
+        else:
+            item['is_selected'] = 0
+
     data = {
-        "article_types": [article_type.to_dict() for article_type in query]
+        "article_types": [article_type.to_dict() for article_type in query],
     }
     return api_success_response(data)
 

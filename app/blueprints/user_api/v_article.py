@@ -1,4 +1,4 @@
-from flask import g
+from flask import g, current_app
 
 from . import bp_user_api
 from ...api_utils import *
@@ -13,6 +13,7 @@ def get_all_article_type():
     selected_article_type_ids = list()
     for article_type in user.article_types:
         selected_article_type_ids.append(article_type.id)
+    current_app.logger.info(selected_article_type_ids)
 
     # 所有分类
     query = ArticleType.select().where(ArticleType.is_delete == 0, ArticleType.show == 1)

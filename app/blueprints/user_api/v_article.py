@@ -6,7 +6,7 @@ from ...models import Article, ArticleType
 @bp_user_api.route('/article_type/all/', methods=['GET'])
 def get_all_article_type():
     """查询所有文章分类"""
-    query = ArticleType.select().where(ArticleType.is_delete == 0)
+    query = ArticleType.select().where(ArticleType.is_delete == 0, ArticleType.show == 1)
     data = {
         "article_types": [article_type.to_dict() for article_type in query]
     }

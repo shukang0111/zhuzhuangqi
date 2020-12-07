@@ -3,7 +3,7 @@ from flask import request, g, current_app, redirect, session, render_template
 from . import bp_user_api
 from ...api_utils import *
 from ...libs.kodo.kodo_api import KodoApi
-from ...models import WXUser, Visitor, Share, Video, Article
+from ...models import WXUser, Visitor, Share, Video, Article, ArticleType, db
 from ...utils.calendar_util import calc_time
 from ...utils.share_util import update_share_times
 from ...utils.weixin_util import get_auth2_access_token, get_wx_user_detail, get_weixin_sign
@@ -246,3 +246,39 @@ def delete_share_video():
     share.update_delete(is_delete=1)
     return api_success_response({})
 
+
+@bp_user_api.route('/wx_user/article_types/', methods=['GET'])
+def get_user_article_types():
+    """查询用户选择文章类型"""
+    user = g.wx_user
+    article_types = list()
+    for article_type in user.article_types:
+        article_types.append(article_type.to_dict())
+
+    data = {
+        "article_types": article_types
+    }
+    return api_success_response(data)
+
+
+@bp_user_api.route('/wx_user/article_types/create/', methods=['POST'])
+def create_wx_user_article_types():
+    """用户订阅专属文章类型"""
+    article_type_ids = g.json.get("article_type_ids")
+    claim_args_list(1204, article_type_ids)
+    user = g.wx_user
+    with db.atomic():
+        user.article_types.clear()
+        query = ArticleType.select().where(ArticleType.id.in_(article_type_ids), ArticleType.is_delete == 0, ArticleType.show == 1)
+        user.article_types.add(query)
+    return api_success_response({})
+
+
+@bp_user_api.route('/wx_user/brand/create/', methods=['POST'])
+def create_wx_user_brand():
+    """用户填写品牌名称"""
+    brand = g.json.get('brand')
+    user = g.wx_user
+    user.brand = brand
+    user.save_ut()
+    return api_success_response({})

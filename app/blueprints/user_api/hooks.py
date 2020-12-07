@@ -15,10 +15,10 @@ def user_authentication():
     # g.wx_user = None
     if request.endpoint.split('.')[-1] in ["get_open_upload_file_tokens", 'index']:
         return
-    # # current_app.logger.info('{}-{}'.format(request.headers, request.full_path))
-    # # wx_user = WXUser.select().where(WXUser.id.in_([23, 24])).get()
-    # # g.wx_user = wx_user
-    # # return
+    # current_app.logger.info('{}-{}'.format(request.headers, request.full_path))
+    # wx_user = WXUser.select().where(WXUser.id == 5).get()
+    # g.wx_user = wx_user
+    # return
     token = request.headers.get('Authorization')
     if token:
         wx_user = WXUser.get_by_token(token)
@@ -26,17 +26,4 @@ def user_authentication():
             g.wx_user = wx_user  # g.admin
             return
     abort(401)
-    # openid = session.get("openid")
-    # current_app.logger.info(openid)
-    # code = request.args.get("code")
-    # # redirect_url = request.url
-    # redirect_url = 'https://zzqapi.e-shigong.com/'
-    # current_app.logger.info("{0}_{1}".format(code, redirect_url))
-    # current_app.logger.info(request.referrer)
-    # if not openid:
-    #     if not code:
-    #         return redirect(get_auth_url(redirect_url))
-    #     else:
-    #         pass
-    #
-    # return
+

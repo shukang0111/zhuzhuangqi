@@ -239,6 +239,7 @@ class WXUser(BaseModel):
     phone = CharField(null=True)  # 电话号码
     wx_number = CharField(null=True)  # 微信号
     qr_code_url = CharField(null=True)  # 用户二维码，自己上传
+    brand = CharField(null=True)  # 品牌
 
     class Meta:
         table_name = "wx_user"
@@ -397,6 +398,7 @@ class PosterTheme(BaseModel):
 class ArticleType(BaseModel):
     """文章分类"""
     name = CharField()
+    wx_users = ManyToManyField(WXUser, backref='article_types')
 
     class Meta:
         table_name = 'article_type'
@@ -414,6 +416,9 @@ class ArticleType(BaseModel):
 
         except cls.DoesNotExist:
             pass
+
+
+WXUserArticleTypeThrough = ArticleType.wx_users.get_through_model()
 
 
 class Article(BaseModel):
@@ -562,4 +567,5 @@ class Visitor(BaseModel):
         )
 
 
-models = [Admin, WXUser, Banner, PosterType, Poster, PosterTheme, ArticleType, Article, Course, Video, Share, Visitor]
+models = [Admin, WXUser, Banner, PosterType, Poster, PosterTheme, ArticleType, WXUserArticleTypeThrough, Article,
+          Course, Video, Share, Visitor]

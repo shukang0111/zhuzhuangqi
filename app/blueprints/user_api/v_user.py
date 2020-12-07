@@ -147,29 +147,18 @@ def count_share_times():
 def get_user_share_video():
     """获取用户我的视频"""
     wx_user = g.wx_user
-    # openid = session.get('openid')
-    # wx_user = WXUser.get_by_openid(openid)
     query = Share.select().where(Share.tid == 4, Share.wx_user_id == wx_user.id, Share.is_delete == 0)
     share_videos = list()
-    # if not query.count():
-    #     item = dict()
-    #     _video = {
-    #         "id": None,
-    #         "video_title": '',
-    #         "video_url": '',
-    #         "cover_url": '',
-    #         "real_use_count": None,
-    #         "extra_add_count": None
-    #     }
-    #     item['video'] = _video
-    #     share_videos.append(item)
-    # else:
+    share_video_ids = list()
     for share in query:
         item = share.to_dict()
         video = Video.select().where(Video.id == share.cid).get()
+        if video.id in share_video_ids:
+            continue
         item['video'] = video.to_dict()
         item['total_use_count'] = share.real_use_count
         share_videos.append(item)
+        share_video_ids.append(video.id)
     data = {
         "videos": share_videos
     }
@@ -180,22 +169,24 @@ def get_user_share_video():
 def visitor_count():
     """访客统计"""
     wx_user = g.wx_user
-    # openid = session.get('openid')
-    # wx_user = WXUser.get_by_openid(openid)
     query = Visitor.select().where(Visitor.wx_user_id == wx_user.id).order_by(Visitor.visit_time.desc())
 
     _visitor = list()
+    _visitor_ids = list()
     for visitor in query:
+        if visitor.id in _visitor_ids:
+            continue
         item = visitor.to_dict()
         v_wx_user = WXUser.select().where(WXUser.id == visitor.visitor_wx_user_id).get()
         item['nickname'] = v_wx_user.nickname
         item['phone'] = v_wx_user.phone
         item['avatar'] = v_wx_user.avatar
         _visitor.append(item)
-    total_count = query.count()
+        _visitor_ids.append(visitor.id)
+    total_count = len(_visitor_ids)
     start_time, end_time = calc_time("today")
     t_query = query.where(Visitor.visit_time.between(start_time, end_time))
-    today_count = t_query.count()
+    today_count = len(list(set([v.id for v in t_query])))
     data = {
         "today_count": today_count,
         "total_count": total_count,
@@ -208,29 +199,17 @@ def visitor_count():
 def get_user_share_article():
     """个人中心我的文章"""
     wx_user = g.wx_user
-    # openid = session.get('openid')
-    # wx_user = WXUser.get_by_openid(openid)
     query = Share.select().where(Share.tid == 2, Share.wx_user_id == wx_user.id, Share.is_delete == 0)
     share_articles = list()
-    # if not query.count():
-    #     item = dict()
-    #     _article = {
-    #         "id": None,
-    #         "article_type_id": None,
-    #         "title": '',
-    #         "contents": "'",
-    #         "cover_url": '',
-    #         "real_use_count": None,
-    #         "extra_add_count": None
-    #     }
-    #     item['article'] = _article
-    #     share_articles.append(item)
-    # else:
+    share_article_ids = list()
     for share in query:
         item = share.to_dict()
         article = Article.select().where(Article.id == share.cid).get()
+        if article.id in share_article_ids:
+            continue
         item['article'] = article.to_dict()
         share_articles.append(item)
+        share_article_ids.append(article.id)
         item['total_use_count'] = share.real_use_count
     data = {
         "articles": share_articles

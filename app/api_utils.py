@@ -113,7 +113,6 @@ def handle_404_error(e: HTTPException) -> Response:
 
 def before_api_request() -> None:
     """API请求前钩子函数"""
-    current_app.logger.info(request.method)
     if request.method == 'OPTIONS':
         return make_response({"code": 200})
     if request.method in ['POST', 'PUT']:

@@ -29,13 +29,13 @@ def index():
         wx_user.avatar = headimgurl
         wx_user.save()
         query = ArticleType.select().where(ArticleType.is_delete == 0, ArticleType.show == 1)
-        wx_user.article_article_types.add(query)
+        wx_user.article_types.add(query)
     except Exception as e:
         current_app.logger.error(e)
         wx_user = WXUser.new(openid, headimgurl, nickname)
         current_app.logger.info("2_{}".format(wx_user.to_dict()))
         query = ArticleType.select().where(ArticleType.is_delete == 0, ArticleType.show == 1)
-        wx_user.article_article_types.add(query)
+        wx_user.article_types.add(query)
     data = {
         "token": wx_user.gen_token()
     }

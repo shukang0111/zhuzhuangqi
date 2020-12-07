@@ -170,9 +170,10 @@ def visitor_count():
     """访客统计"""
     wx_user = g.wx_user
     query = Visitor.select().where(Visitor.wx_user_id == wx_user.id).order_by(Visitor.visit_time.desc())
-
+    start_time, end_time = calc_time("today")
     _visitor = list()
     _visitor_user_ids = list()
+    _today_visitor_user_ids = list()
     for visitor in query:
         item = visitor.to_dict()
         v_wx_user = WXUser.select().where(WXUser.id == visitor.visitor_wx_user_id).get()
@@ -183,10 +184,11 @@ def visitor_count():
         item['avatar'] = v_wx_user.avatar
         _visitor.append(item)
         _visitor_user_ids.append(v_wx_user.id)
+        # 今日访客记录
+        if start_time < visitor.visit_time < end_time:
+            _today_visitor_user_ids.append(v_wx_user.id)
     total_count = len(_visitor_user_ids)
-    start_time, end_time = calc_time("today")
-    t_query = query.where(Visitor.visit_time.between(start_time, end_time))
-    today_count = len(list(set([v.id for v in t_query])))
+    today_count = len(_today_visitor_user_ids)
     data = {
         "today_count": today_count,
         "total_count": total_count,

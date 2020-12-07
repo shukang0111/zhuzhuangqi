@@ -28,13 +28,11 @@ def index():
         wx_user.nickname = nickname
         wx_user.avatar = headimgurl
         wx_user.save()
-        current_app.logger.info("1_{}".format(wx_user.to_dict()))
+        query = ArticleType.select().where(ArticleType.is_delete == 0, ArticleType.show == 0)
+        wx_user.article_article_types.add(query)
     except:
         wx_user = WXUser.new(openid, headimgurl, nickname)
         current_app.logger.info("2_{}".format(wx_user.to_dict()))
-    # session['openid'] = openid
-    # current_app.logger.info(openid)
-    # current_app.logger.info(request.referrer)
 
     data = {
         "token": wx_user.gen_token()

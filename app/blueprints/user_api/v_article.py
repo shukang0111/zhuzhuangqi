@@ -14,7 +14,7 @@ def get_all_article_type():
     for article_type in user.article_types:
         selected_article_type_ids.append(article_type.id)
     current_app.logger.info(selected_article_type_ids)
-
+    info = list()
     # 所有分类
     query = ArticleType.select().where(ArticleType.is_delete == 0, ArticleType.show == 1)
     for _article_type in query:
@@ -23,9 +23,10 @@ def get_all_article_type():
             item['is_selected'] = 1
         else:
             item['is_selected'] = 0
+        info.append(item)
 
     data = {
-        "article_types": [article_type.to_dict() for article_type in query],
+        "article_types": info
     }
     return api_success_response(data)
 

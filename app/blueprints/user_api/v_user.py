@@ -182,7 +182,7 @@ def visitor_count():
         item['phone'] = v_wx_user.phone
         item['avatar'] = v_wx_user.avatar
         _visitor.append(item)
-        _visitor_user_ids.append(visitor.id)
+        _visitor_user_ids.append(v_wx_user.id)
     total_count = len(_visitor_user_ids)
     start_time, end_time = calc_time("today")
     t_query = query.where(Visitor.visit_time.between(start_time, end_time))

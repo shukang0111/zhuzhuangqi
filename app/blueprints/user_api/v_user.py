@@ -52,7 +52,10 @@ def get_wx_user_center_info():
     """查询微信用户个人信息"""
     wx_user = g.wx_user
     item = wx_user.to_dict()
-    item['detail_address'] = get_detail_area_info(wx_user.area_info_id)
+    if wx_user.area_info_id:
+        item['detail_address'] = get_detail_area_info(wx_user.area_info_id)
+    else:
+        item['detail_address'] = None
     data = {
         "wx_user": item
     }

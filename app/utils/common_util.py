@@ -2,6 +2,8 @@ import string
 from enum import Enum
 from random import choice
 
+from app.models import Area
+
 
 def gen_random_str(length=8, chars=string.ascii_letters + string.digits + string.punctuation):
     """
@@ -47,3 +49,19 @@ class FileType(EnumBase):
     PANORAMA = 3
     DOC = 4
     PDF = 5
+
+
+def get_detail_area_info(area_info_id):
+    """获取地区全称"""
+    area_list = []
+    area = Area.get_by_id(area_info_id)
+    area_list.append(area.name)
+    while True:
+        query = Area.select().where(Area.id == area.pid)
+        _area = None if query.count() < 1 else query[0]
+        if _area:
+            area_list.append(_area.name)
+        else:
+            break
+    area_str = ''.join(reversed(area_list))
+    return area_str

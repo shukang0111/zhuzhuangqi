@@ -55,6 +55,7 @@ class APIError(Exception):
         1307: '请填写姓名',
         1308: '请填写手机号',
         1309: '请输入房屋面积',
+        1310: '请输入正确的11位手机号码'
     }
 
     def __init__(self, code: int, message: str=None, status_code: int=200):

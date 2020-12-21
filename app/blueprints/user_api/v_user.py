@@ -5,6 +5,8 @@ from ...api_utils import *
 from ...libs.kodo.kodo_api import KodoApi
 from ...models import WXUser, Visitor, Share, Video, Article, ArticleType, db
 from ...utils.calendar_util import calc_time
+from ...utils.common_util import get_detail_area_info
+from ...utils.re_util import check_mobile
 from ...utils.share_util import update_share_times
 from ...utils.weixin_util import get_auth2_access_token, get_wx_user_detail, get_weixin_sign
 
@@ -49,10 +51,10 @@ def index():
 def get_wx_user_center_info():
     """查询微信用户个人信息"""
     wx_user = g.wx_user
-    # openid = session.get('openid')
-    # wx_user = WXUser.get_by_openid(openid)
+    item = wx_user.to_dict()
+    item['detail_address'] = get_detail_area_info(wx_user.id)
     data = {
-        "wx_user": wx_user.to_dict()
+        "wx_user": item
     }
     return api_success_response(data)
 
@@ -184,7 +186,7 @@ def visitor_count():
         item['nickname'] = v_wx_user.nickname
         item['phone'] = v_wx_user.phone
         item['avatar'] = v_wx_user.avatar
-        item['detail_address'] = v_wx_user.detail_address
+        item['detail_address'] = get_detail_area_info(v_wx_user.area_info_id)
         item['room_size'] = v_wx_user.room_size
         _visitor.append(item)
         _visitor_user_ids.append(v_wx_user.id)
@@ -276,19 +278,21 @@ def update_user_room_info():
     用户获取装修报价
     :return:
     """
-    detail_address, nickname, phone, room_size = map(g.json.get, ['detail_address', 'nickname', 'phone', 'room_size'])
-    if not detail_address:
+    area_info_id, nickname, phone, room_size = map(g.json.get, ['area_info_id', 'nickname', 'phone', 'room_size'])
+    if not area_info_id:
         raise APIError(1306)
     if not nickname:
         raise APIError(1307)
     if not phone:
         raise APIError(1308)
+    if not check_mobile(phone):
+        raise APIError(1310)
     if not room_size:
         raise APIError(1309)
-    claim_args_str(1204, detail_address, nickname, phone)
-    claim_args_number(1204, room_size)
+    claim_args_str(1204, nickname, phone)
+    claim_args_number(1204, area_info_id, room_size)
     wx_user = g.wx_user
-    wx_user.detail_address = detail_address
+    wx_user.area_info_id = area_info_id
     wx_user.nickname = nickname
     wx_user.phone = phone
     wx_user.room_size = room_size

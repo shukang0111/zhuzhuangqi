@@ -240,6 +240,8 @@ class WXUser(BaseModel):
     wx_number = CharField(null=True)  # 微信号
     qr_code_url = CharField(null=True)  # 用户二维码，自己上传
     brand = CharField(null=True)  # 品牌
+    detail_address = CharField(null=True)  # 地址
+    room_size = DecimalField(default=0, max_digits=6, decimal_places=2)  # 房屋面积
 
     class Meta:
         table_name = "wx_user"

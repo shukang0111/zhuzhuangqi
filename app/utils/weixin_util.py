@@ -104,7 +104,7 @@ def get_weixin_jsapi_ticket(access_token):
 
 
 def get_weixin_sign(url):
-    """"""
+    """获取微信分享链接签名"""
     try:
         access_token = (redis_client.get("ACCESS_TOKEN")).decode()
     except:
@@ -131,6 +131,39 @@ def get_weixin_sign(url):
     data['signature'] = hashlib.sha1(sort_string.encode('utf-8')).hexdigest()
     data['app_id'] = WEIXIN['app_id']
     return data
+
+
+# def send_template_msg(openid, template_id):
+#     """发送模板消息"""
+#     url = 'https://api.weixin.qq.com/cgi-bin/message/template/send'
+#     try:
+#         access_token = (redis_client.get("ACCESS_TOKEN")).decode()
+#     except:
+#         access_token = get_access_token()
+#         redis_client.set("ACCESS_TOKEN", access_token, ex=7000)
+#     params = {
+#         'access_token': access_token
+#     }
+#     data = {
+#         'touser': openid,
+#         'template_id': template_id,
+#         'data': {
+#             'first': {
+#                 'value': '订阅成功',
+#                 'color': '#173177'
+#             },
+#             'keyword1': {
+#                 'value': 'xxx',
+#                 'color': '#173177'
+#             },
+#             'remark': {
+#                 'value': 'xxx',
+#                 'color': '#173177'
+#             }
+#         }
+#     }
+#     resp = requests.post(url, params=params, data=json.dumps(data)).json()
+#     return resp
 
 
 def create_menu():

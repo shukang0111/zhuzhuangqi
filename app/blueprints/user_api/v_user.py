@@ -184,6 +184,8 @@ def visitor_count():
         item['nickname'] = v_wx_user.nickname
         item['phone'] = v_wx_user.phone
         item['avatar'] = v_wx_user.avatar
+        item['detail_address'] = v_wx_user.detail_address
+        item['room_size'] = v_wx_user.room_size
         _visitor.append(item)
         _visitor_user_ids.append(v_wx_user.id)
         # 今日访客记录
@@ -265,4 +267,30 @@ def create_wx_user_brand():
     if brand:
         user.brand = brand
         user.save_ut()
+    return api_success_response({})
+
+
+@bp_user_api.route('/room_decoration/', methods=['POST'])
+def update_user_room_info():
+    """
+    用户获取装修报价
+    :return:
+    """
+    detail_address, nickname, phone, room_size = map(g.json.get, ['detail_address', 'nickname', 'phone', 'room_size'])
+    if not detail_address:
+        raise APIError(1306)
+    if not nickname:
+        raise APIError(1307)
+    if not phone:
+        raise APIError(1308)
+    if not room_size:
+        raise APIError(1309)
+    claim_args_str(1204, detail_address, nickname, phone)
+    claim_args_number(1204, room_size)
+    wx_user = g.wx_user
+    wx_user.detail_address = detail_address
+    wx_user.nickname = nickname
+    wx_user.phone = phone
+    wx_user.room_size = room_size
+    wx_user.save()
     return api_success_response({})

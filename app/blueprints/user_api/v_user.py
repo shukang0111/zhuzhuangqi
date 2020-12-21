@@ -189,8 +189,11 @@ def visitor_count():
         item['nickname'] = v_wx_user.nickname
         item['phone'] = v_wx_user.phone
         item['avatar'] = v_wx_user.avatar
-        item['detail_address'] = get_detail_area_info(v_wx_user.area_info_id)
         item['room_size'] = v_wx_user.room_size
+        if v_wx_user.area_info_id:
+            item['detail_address'] = get_detail_area_info(v_wx_user.area_info_id)
+        else:
+            item['detail_address'] = None
         _visitor.append(item)
         _visitor_user_ids.append(v_wx_user.id)
         # 今日访客记录

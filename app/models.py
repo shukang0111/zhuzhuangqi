@@ -523,6 +523,7 @@ class Video(BaseModel):
 class Share(BaseModel):
     """用户分享相关"""
     SHARE_TYPE = (
+        (0, "装修报价"),
         (1, "海报"),
         (2, "文章"),
         (3, "课堂"),

@@ -56,15 +56,16 @@ def get_detail_area_info(area_info_id):
     area_list = []
     area = Area.get_by_id(area_info_id)
     area_list.append(area.name)
-    while True:
-        if area.pid:
-            query = Area.select().where(Area.id == area.pid)
-            _area = None if query.count() < 1 else query[0]
-            if _area:
-                area_list.append(_area.name)
-            else:
-                break
-        else:
-            break
+    if area.pid:
+        query = Area.select().where(Area.id == area.pid)
+        area_1 = None if query.count() < 1 else query[0]
+        if area_1:
+            area_list.append(area_1.name)
+        if area_1.pid:
+            query = Area.select().where(Area.id == area_1.pid)
+            area_2 = None if query.count() < 1 else query[0]
+            if area_2:
+                area_list.append(area_2.name)
+
     area_str = ''.join(reversed(area_list))
     return area_str

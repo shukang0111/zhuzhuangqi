@@ -30,8 +30,7 @@ def verify_ex_token():
     """测试"""
     if request.method == 'GET':
         args = request.args
-        print(args)
-
+        current_app.logger.info('args')
         token = WX_TOKEN
         data = request.args
         signature = data.get('signature', '')
@@ -100,6 +99,7 @@ def verify_ex_token():
                 # merchant_token.update_wx_user_info(None)
                 # pass
         return "success"
+    return
 
 
 @bp_admin_ext.route('/create_menu/', methods=['POST'])

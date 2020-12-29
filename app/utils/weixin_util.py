@@ -189,7 +189,7 @@ def create_menu():
         ]
     }
     resp = requests.post(url, data=data).json()
-    print(resp)
+    current_app.logger.info('resp：{}'.format(resp))
     return resp
 
 
@@ -202,7 +202,7 @@ def get_menu():
         redis_client.set("ACCESS_TOKEN", access_token, ex=7000)
     url = 'https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token={}'.format(access_token)
     resp = requests.get(url).json()
-    print(resp)
+    current_app.logger.info('自定义菜单：{}'.format(resp))
     return resp
 
 
@@ -215,5 +215,5 @@ def delete_menu():
         redis_client.set("ACCESS_TOKEN", access_token, ex=7000)
     url = 'https://api.weixin.qq.com/cgi-bin/menu/delete?access_token={}'.format(access_token)
     resp = requests.get(url).json()
-    print(resp)
+    current_app.logger.info('resp：{}'.format(resp))
     return resp

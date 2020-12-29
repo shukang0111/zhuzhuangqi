@@ -8,7 +8,7 @@ from urllib import parse
 from flask import request, make_response, current_app, redirect, url_for, render_template, session, jsonify
 
 from app.blueprints.admin_ext import bp_admin_ext
-from app.models import db, models, Admin
+from app.models import db, models, Admin, WXUser, ArticleType
 from app.utils.redis_util import redis_client
 from app.utils.weixin_util import get_access_token, create_menu, get_menu, delete_menu, get_wx_user_detail, \
     get_auth2_access_token, WEIXIN, get_auth_url
@@ -78,15 +78,20 @@ def verify_ex_token():
                 }
                 resp_json = requests.get(user_info_url, params=params).json()
                 current_app.logger.info(resp_json)
-                item = dict()
-                item['scan_code'] = 1
-                item['subscribe'] = resp_json.get("subscribe")
-                item['openid'] = openid
-                item['nickname'] = resp_json.get("nickname")
-                item['headimgurl'] = resp_json.get('headimgurl')
-                item['event'] = event
-                item['unionid'] = resp_json.get("unionid")
-                current_app.logger.info(item)
+                openid = openid
+                nickname = resp_json.get("nickname")
+                headimgurl = resp_json.get('headimgurl')
+                try:
+                    wx_user = WXUser.get_by_openid(openid)
+                    wx_user.nickname = nickname
+                    wx_user.avatar = headimgurl
+                    wx_user.save()
+                except Exception as e:
+                    current_app.logger.error(e)
+                    wx_user = WXUser.new(openid, headimgurl, nickname)
+                    wx_user.article_types.clear()
+                    query = ArticleType.select().where(ArticleType.is_delete == 0, ArticleType.show == 1)
+                    wx_user.article_types.add(query)
 
             # elif event == "SCAN":  # 用户已关注时的事件推送
             #     pass

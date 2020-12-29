@@ -106,7 +106,7 @@ def verify_ex_token():
 def create_self_menu():
     """创建菜单"""
     number = request.json.get('number')
-    data = request.json_module.get('data')
+    data = request.json.get('data')
     item = None
     if number == 1:
         item = create_menu(data)

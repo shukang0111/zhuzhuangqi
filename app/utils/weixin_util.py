@@ -21,8 +21,8 @@ import requests
 
 # VERIFY = os.getenv('CA_CERTS_PATH') or False
 WEIXIN = {
-    'app_id': 'wxb8f27e67d93fa31f',
-    'app_secret': '7330e6f5a480f612c1683ac7810673bb',
+    'app_id': 'wx36fe24ffe00a7250',
+    'app_secret': '29ce21eb591d6b2b54869094b4121e5b',
 }
 
 

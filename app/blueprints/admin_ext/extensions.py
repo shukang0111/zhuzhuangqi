@@ -13,7 +13,7 @@ from app.utils.redis_util import redis_client
 from app.utils.weixin_util import get_access_token, create_menu, get_menu, delete_menu, get_wx_user_detail, \
     get_auth2_access_token, WEIXIN, get_auth_url
 
-WX_TOKEN = "shukang"
+WX_TOKEN = "zhuzhuangqi"
 
 
 @bp_admin_ext.route('/data/init/', methods=['GET'])

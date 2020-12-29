@@ -166,14 +166,9 @@ def get_weixin_sign(url):
 #     return resp
 
 
-def create_menu():
-    """创建自定义菜单"""
-    try:
-        access_token = (redis_client.get("ACCESS_TOKEN")).decode()
-    except:
-        access_token = get_access_token()
-        redis_client.set("ACCESS_TOKEN", access_token, ex=7000)
-    url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token={}'.format(access_token)
+def create_menu(data):
+    """
+    创建自定义菜单
     data = {
         "button": [
             {
@@ -188,6 +183,14 @@ def create_menu():
             }
         ]
     }
+    """
+    try:
+        access_token = (redis_client.get("ACCESS_TOKEN")).decode()
+    except:
+        access_token = get_access_token()
+        redis_client.set("ACCESS_TOKEN", access_token, ex=7000)
+    url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token={}'.format(access_token)
+
     resp = requests.post(url, data=data).json()
     current_app.logger.info('resp：{}'.format(resp))
     return resp

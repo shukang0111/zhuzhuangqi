@@ -66,7 +66,7 @@ def edit_wx_user_info():
                                                                                    'qr_code_url', 'phone', 'wx_number'])
     claim_args(1203, wx_user_id)
     claim_args_int(1204, wx_user_id)
-    claim_args_str(1204, avatar, nickname, qr_code_url, phone, wx_number)
+    # claim_args_str(1204, avatar, nickname, qr_code_url, phone, wx_number)
     wx_user = WXUser.get_by_id(wx_user_id, code=1104)
     wx_user.update_info(avatar, nickname, phone, wx_number, qr_code_url)
     return api_success_response({})

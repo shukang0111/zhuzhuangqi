@@ -21,7 +21,7 @@ def get_user_poster_list(poster_type_id):
     poster_type = PosterType.get_by_id(poster_type_id, code=1104)
     _poster_type = poster_type.to_dict()
     _posters = list()
-    posters = Poster.select().where(Poster.poster_type_id == poster_type.id, Poster.is_delete == 0)
+    posters = Poster.select().where(Poster.poster_type_id == poster_type.id, Poster.is_delete == 0, Poster.show == 1)
     for poster in posters:
         item = poster.to_dict()
         item['total_use_count'] = item['real_use_count'] + item['extra_add_count']

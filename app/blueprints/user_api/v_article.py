@@ -36,7 +36,7 @@ def get_user_article_list(article_type_id):
     """公众号文章列表"""
     article_type = ArticleType.get_by_id(article_type_id, code=1104)
     item = article_type.to_dict()
-    query = Article.select().where(Article.article_type_id == article_type_id, Article.is_delete == 0)
+    query = Article.select().where(Article.article_type_id == article_type_id, Article.is_delete == 0, Article.show == 1)
     _articles = list()
     for article in query:
         _article = article.to_dict()

@@ -12,11 +12,10 @@ def user_authentication():
     用户身份认证
     :return:
     """
-    # g.wx_user = None
-    # if request.endpoint.split('.')[-1] in ["get_open_upload_file_tokens", 'index']:
-    #     return
+    g.wx_user = None
+    if request.endpoint.split('.')[-1] in ["get_open_upload_file_tokens", 'index']:
+        return
     # wx_user = WXUser.select().where(WXUser.id.in_([23, 24])).get()
-    # current_app.logger.info(request.headers)
     # g.wx_user = wx_user
     # return
     token = request.headers.get('Authorization')

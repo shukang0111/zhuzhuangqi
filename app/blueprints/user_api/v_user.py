@@ -215,7 +215,6 @@ def get_user_share_article():
     share_article_ids = list()
     for share in query:
         item = share.to_dict()
-        current_app.logger.info('share_cid:{}'.format(share.cid))
         article = Article.select().where(Article.id == share.cid).get()
         if article.id in share_article_ids:
             continue

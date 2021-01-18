@@ -86,13 +86,9 @@ def delete_poster():
 def edit_poster():
     """编辑单个海报"""
     poster_id, name, cover_url, extra_add_count = map(g.json.get, ['poster_id', 'name', 'cover_url', 'extra_add_count'])
-    claim_args(1203, poster_id, name, cover_url, extra_add_count)
+    claim_args(1203, poster_id, name, cover_url)
     claim_args_int(1204, poster_id, extra_add_count)
     claim_args_str(1204, name, cover_url)
-    check_poster = Poster.get_by_name(name)
-    if check_poster:
-        if check_poster.id == poster_id:
-            raise APIError(1304)
     poster = Poster.get_by_id(poster_id, code=1104)
     poster.name = name
     poster.cover_url = cover_url

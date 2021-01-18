@@ -10,8 +10,6 @@ def create_article_type():
     """创建文章分类"""
     name = request.json.get("name")
     claim_args_str(1204, name)
-    article_type = ArticleType.get_by_name(name)
-    claim_args_true(1304, not article_type)
     ArticleType.new(name)
     return api_success_response({})
 
@@ -56,7 +54,7 @@ def get_all_article_type():
 def create_article():
     """创建文章"""
     article_type_id, title, contents, cover_url, extra_add_count = map(g.json.get, ['article_type_id', 'title', 'contents', 'cover_url', 'extra_add_count'])
-    claim_args(1203, title, contents, cover_url, extra_add_count)
+    claim_args(1203, title, contents, cover_url)
     claim_args_int(1204, extra_add_count)
     claim_args_str(1204, title, contents, cover_url)
     Article.new(article_type_id, title, contents, cover_url, extra_add_count)
@@ -88,7 +86,7 @@ def delete_article():
 def edit_article():
     """编辑文章"""
     article_id, title, contents, cover_url, extra_add_count = map(g.json.get, ['article_id', 'title', 'contents', 'cover_url', 'extra_add_count'])
-    claim_args(1203, article_id, title, contents, cover_url, extra_add_count)
+    claim_args(1203, article_id, title, contents, cover_url)
     claim_args_int(1204, article_id, extra_add_count)
     claim_args_str(1204, title, contents, cover_url)
     article = Article.get_by_id(article_id, code=1104)

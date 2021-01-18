@@ -10,8 +10,6 @@ def create_poster_type():
     """创建海报分类"""
     name = request.json.get("name")
     claim_args_str(1204, name)
-    poster_type = PosterType.get_by_name(name)
-    claim_args_true(1304, not poster_type)
     PosterType.new(name)
     return api_success_response({})
 
@@ -55,11 +53,10 @@ def get_all_poster_type():
 def create_poster():
     """创建海报"""
     poster_type_id, name, cover_url, extra_add_count = map(g.json.get, ['poster_type_id', 'name', 'cover_url', 'extra_add_count'])
-    claim_args(1203, poster_type_id, name, cover_url, extra_add_count)
-    claim_args_int(1204, poster_type_id, extra_add_count)
+    claim_args(1203, poster_type_id, name, cover_url)
+    claim_args_int(1204, poster_type_id)
     claim_args_str(1204, name, cover_url)
-    poster = Poster.get_by_name(name)
-    claim_args_true(1304, not poster)
+
     Poster.new(poster_type_id, name, cover_url, extra_add_count)
     return api_success_response({})
 

@@ -427,7 +427,7 @@ class Article(BaseModel):
     """文章"""
     article_type_id = IntegerField(default=0)  # 文章分类id
     title = CharField()
-    contents = TextField(null=True)
+    contents = TextField(default='')
     cover_url = CharField(default='')
     real_use_count = IntegerField(default=0)
     extra_add_count = IntegerField(default=0)

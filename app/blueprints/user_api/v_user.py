@@ -139,7 +139,7 @@ def count_share_times():
     else:
         share.update_real_use_count()
         Visitor.new(wx_user_id=share_wx_user.id, visitor_wx_user_id=visitor_wx_user.id, share_id=share.id)
-    item = update_share_times(cid, tid)
+    item = update_share_times(int(cid), int(tid))
     data = {
         "wx_user": share_wx_user.to_dict(),
         "info": item

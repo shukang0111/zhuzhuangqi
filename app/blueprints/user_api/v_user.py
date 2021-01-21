@@ -29,8 +29,8 @@ def index():
     headimgurl = user_info.get("headimgurl")
     try:
         wx_user = WXUser.get_by_openid(openid)
-        wx_user.nickname = nickname
-        wx_user.avatar = headimgurl
+        # wx_user.nickname = nickname
+        # wx_user.avatar = headimgurl
         wx_user.save()
     except Exception as e:
         current_app.logger.error(e)

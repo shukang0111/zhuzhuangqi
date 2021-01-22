@@ -269,9 +269,8 @@ def create_wx_user_brand():
     """用户填写品牌名称"""
     brand = g.json.get('brand')
     user = g.wx_user
-    if brand:
-        user.brand = brand
-        user.save_ut()
+    user.brand = brand
+    user.save_ut()
     return api_success_response({})
 
 

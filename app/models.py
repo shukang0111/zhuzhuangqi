@@ -359,7 +359,8 @@ class Poster(BaseModel):
             poster_type_id=poster_type_id,
             name=name,
             cover_url=cover_url,
-            extra_add_count=extra_add_count
+            extra_add_count=extra_add_count,
+            code_position=code_position
         )
 
     @classmethod

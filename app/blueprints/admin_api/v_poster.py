@@ -58,7 +58,7 @@ def create_poster():
     claim_args_int(1204, poster_type_id)
     claim_args_str(1204, name, cover_url)
 
-    Poster.new(poster_type_id, name, cover_url, extra_add_count)
+    Poster.new(poster_type_id, name, cover_url, extra_add_count, code_position)
     return api_success_response({})
 
 
@@ -89,13 +89,14 @@ def edit_poster():
     """编辑单个海报"""
     poster_id, name, cover_url, extra_add_count, code_position = \
         map(g.json.get, ['poster_id', 'name', 'cover_url', 'extra_add_count', 'code_position'])
-    claim_args(1203, poster_id, name, cover_url)
-    claim_args_int(1204, poster_id, extra_add_count)
+    claim_args(1203, poster_id, name, cover_url, code_position)
+    claim_args_int(1204, poster_id, extra_add_count, code_position)
     claim_args_str(1204, name, cover_url)
     poster = Poster.get_by_id(poster_id, code=1104)
     poster.name = name
     poster.cover_url = cover_url
     poster.extra_add_count = extra_add_count
+    poster.code_position = code_position
     poster.save_ut()
     return api_success_response({})
 

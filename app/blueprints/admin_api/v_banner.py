@@ -31,7 +31,8 @@ def delete_banner():
     """删除banner图"""
     banner_id = g.json.get('banner_id')
     banner = Banner.get_by_id(banner_id, code=1104)
-    banner.update_delete(is_delete=1)
+    # banner.update_delete(is_delete=1)
+    banner.delete_instance()
     return api_success_response({})
 
 

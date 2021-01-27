@@ -52,7 +52,8 @@ def get_all_poster_type():
 @bp_admin_api.route('/poster/create/', methods=['POST'])
 def create_poster():
     """创建海报"""
-    poster_type_id, name, cover_url, extra_add_count = map(g.json.get, ['poster_type_id', 'name', 'cover_url', 'extra_add_count'])
+    poster_type_id, name, cover_url, extra_add_count, code_position = \
+        map(g.json.get, ['poster_type_id', 'name', 'cover_url', 'extra_add_count', 'code_position'])
     claim_args(1203, poster_type_id, name, cover_url)
     claim_args_int(1204, poster_type_id)
     claim_args_str(1204, name, cover_url)
@@ -78,14 +79,16 @@ def delete_poster():
     poster_id = g.json.get('poster_id')
     claim_args_int(1204, poster_id)
     poster = Poster.get_by_id(poster_id, code=1104)
-    poster.update_delete(is_delete=1)
+    poster.delete_instance()
+    # poster.update_delete(is_delete=1)
     return api_success_response({})
 
 
 @bp_admin_api.route('/poster/edit/', methods=['POST'])
 def edit_poster():
     """编辑单个海报"""
-    poster_id, name, cover_url, extra_add_count = map(g.json.get, ['poster_id', 'name', 'cover_url', 'extra_add_count'])
+    poster_id, name, cover_url, extra_add_count, code_position = \
+        map(g.json.get, ['poster_id', 'name', 'cover_url', 'extra_add_count', 'code_position'])
     claim_args(1203, poster_id, name, cover_url)
     claim_args_int(1204, poster_id, extra_add_count)
     claim_args_str(1204, name, cover_url)

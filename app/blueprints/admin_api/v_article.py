@@ -78,7 +78,8 @@ def delete_article():
     article_id = g.json.get('article_id')
     claim_args_int(1204, article_id)
     article = Article.get_by_id(article_id, code=1104)
-    article.update_delete(is_delete=1)
+    # article.update_delete(is_delete=1)
+    article.delete_instance()
     return api_success_response({})
 
 

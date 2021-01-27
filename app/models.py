@@ -348,12 +348,13 @@ class Poster(BaseModel):
     cover_url = CharField()
     real_use_count = IntegerField(default=0)
     extra_add_count = IntegerField(default=0)
+    code_position = IntegerField(default=1)
 
     class Meta:
         table_name = 'poster'
 
     @classmethod
-    def new(cls, poster_type_id, name, cover_url, extra_add_count):
+    def new(cls, poster_type_id, name, cover_url, extra_add_count, code_position):
         return cls.create(
             poster_type_id=poster_type_id,
             name=name,

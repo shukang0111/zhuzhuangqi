@@ -33,7 +33,8 @@ def delete_course():
     course_id = g.json.get('course_id')
     claim_args_int(1204, course_id)
     course = Course.get_by_id(course_id, code=1104)
-    course.update_delete(is_delete=1)
+    # course.update_delete(is_delete=1)
+    course.delete_instance()
     return api_success_response({})
 
 

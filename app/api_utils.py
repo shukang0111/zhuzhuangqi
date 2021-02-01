@@ -123,6 +123,7 @@ def before_api_request() -> None:
     if request.method in ['POST', 'PUT']:
         try:
             g.json = request.get_json(force=True)  # g.json
+            current_app.logger.info(request.args)
         except Exception as e:
             current_app.logger.error(e)
             abort(400)

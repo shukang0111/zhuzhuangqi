@@ -24,6 +24,7 @@ def get_user_poster_list(poster_type_id):
     posters = Poster.select().where(Poster.poster_type_id == poster_type.id, Poster.is_delete == 0, Poster.show == 1)
     for poster in posters:
         item = poster.to_dict()
+        item['cover_url'] = poster.cover_url + '?imageslim/interlace/1/q/80'
         item['total_use_count'] = item['real_use_count'] + item['extra_add_count']
         _posters.append(item)
     _poster_type["poster"] = _posters

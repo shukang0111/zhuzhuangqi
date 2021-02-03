@@ -215,13 +215,17 @@ def get_user_share_article():
     share_article_ids = list()
     for share in query:
         item = share.to_dict()
-        article = Article.select().where(Article.id == share.cid).get()
-        if article.id in share_article_ids:
-            continue
-        item['article'] = article.to_dict()
-        share_articles.append(item)
-        share_article_ids.append(article.id)
-        item['total_use_count'] = share.real_use_count
+        try:
+            article = Article.select().where(Article.id == share.cid).get()
+        except:
+            pass
+        else:
+            if article.id in share_article_ids:
+                continue
+            item['article'] = article.to_dict()
+            item['total_use_count'] = share.real_use_count
+            share_articles.append(item)
+            share_article_ids.append(article.id)
     data = {
         "articles": share_articles
     }

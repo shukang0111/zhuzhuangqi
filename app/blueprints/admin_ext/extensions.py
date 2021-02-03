@@ -1,6 +1,7 @@
 import hashlib
 import json
 import urllib
+from tempfile import NamedTemporaryFile
 
 import requests
 import xmltodict as xmltodict
@@ -8,7 +9,7 @@ from urllib import parse
 from flask import request, make_response, current_app, redirect, url_for, render_template, session, jsonify
 
 from app.blueprints.admin_ext import bp_admin_ext
-from app.models import db, models, Admin, WXUser, ArticleType
+from app.models import db, models, Admin, WXUser, ArticleType, Article
 from app.utils.redis_util import redis_client
 from app.utils.weixin_util import get_access_token, create_menu, get_menu, delete_menu, get_wx_user_detail, \
     get_auth2_access_token, WEIXIN, get_auth_url
@@ -117,7 +118,36 @@ def create_self_menu():
     return make_response({"code": 0, "message": item})
 
 
+@bp_admin_ext.route('/news/add/', methods=['POST'])
+def add_news_content():
+    """
+    添加文章数据
+    :return:
+    """
+    import xlrd
+    file = request.files.get('file')
+    with NamedTemporaryFile() as f:
+        f.write(file.read())
+        f.seek(0)
+        wb = xlrd.open_workbook(f.name)
+        sheet = wb.sheet_by_index(0)
+        nrows = sheet.nrows
+        dataset = list()
+        for i in range(nrows):
+            dataset.append(sheet.row_values(i))
 
-
-
-
+        for i in range(1, len(dataset)):
+            title = dataset[i][0]
+            url = dataset[i][1]
+            content = dataset[i][2]
+            read_count = dataset[i][3]
+            extra_count = dataset[i][4]
+            Article.create(
+                article_type_id=6,
+                title=title,
+                contents=content,
+                cover_url=url,
+                extra_add_count=extra_count,
+                real_use_count=read_count
+            )
+    return jsonify({'code': 200})

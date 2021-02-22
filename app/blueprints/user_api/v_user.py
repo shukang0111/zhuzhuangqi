@@ -93,16 +93,11 @@ def get_open_upload_file_tokens():
 @bp_user_api.route('/weixin/js/auth/', methods=['GET'])
 def get_weixin_ticket():
     """前端获取js配置信息"""
-    # url = request.args.get('url')
-    zzq_url = "https://zzqapi.e-shigong.com"
-    url = request.full_path
     wx_user = g.wx_user
-    # openid = session.get('openid')
-    # wx_user = WXUser.get_by_openid(openid)
-    # wx_url = zzq_url + url
     wx_url = request.headers.get('Referer')
-    # current_app.logger.info(request.headers.get('Referer'))
-    # current_app.logger.info('wx_url')
+    current_app.logger.info('wx_url')
+    if not wx_url:
+        wx_url = request.args.get('url')
     weixin_sign = get_weixin_sign(wx_url)
     weixin_sign['oid'] = wx_user.openid
     data = {

@@ -121,7 +121,7 @@ def create_share():
 def count_share_times():
     """用户点击分享链接"""
     current_app.logger.info(request.full_path)
-    oid, cid, tid = map(request.args.get, ['oid', 'cid', 'tid'])
+    oid, cid, tid = map(request.args.get, ['oid', 'id', 'tid'])
     visitor_wx_user = g.wx_user
     # openid = session.get('openid')
     # visitor_wx_user = WXUser.get_by_openid(openid)

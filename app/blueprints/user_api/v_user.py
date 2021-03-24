@@ -95,7 +95,7 @@ def get_weixin_ticket():
     """前端获取js配置信息"""
     wx_user = g.wx_user
     full_path = request.full_path
-    wx_url = full_path.split('?')[-1]
+    wx_url = full_path.split('?')[1] + '?' + full_path.split('?')[2]
     current_app.logger.info('wx_url')
     weixin_sign = get_weixin_sign(wx_url)
     weixin_sign['oid'] = wx_user.openid

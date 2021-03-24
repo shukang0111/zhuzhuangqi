@@ -94,10 +94,10 @@ def get_open_upload_file_tokens():
 def get_weixin_ticket():
     """前端获取js配置信息"""
     wx_user = g.wx_user
-    wx_url = request.headers.get('Referer')
-    current_app.logger.info('wx_url')
-    if not wx_url:
-        wx_url = request.args.get('url')
+    # wx_url = request.headers.get('Referer')
+    # current_app.logger.info('wx_url')
+    # if not wx_url:
+    wx_url = request.args.get('url')
     weixin_sign = get_weixin_sign(wx_url)
     weixin_sign['oid'] = wx_user.openid
     data = {

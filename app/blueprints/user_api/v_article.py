@@ -17,7 +17,7 @@ def search_article_video():
         return api_success_response({})
     content_list = []
     if content_type == "1":
-        query_set = Article.select().where(Article.title.contains(search_key))
+        query_set = Article.select().where(Article.title.contains(search_key), Video.is_delete == 0, Video.show == 1)
         for item in query_set:
             content_list.append({
                 'id': item.id,
@@ -27,7 +27,7 @@ def search_article_video():
                 'content_type': 1
             })
     else:
-        query_set = Video.select().where(Video.video_title.contains(search_key))
+        query_set = Video.select().where(Video.video_title.contains(search_key), Video.is_delete == 0, Video.show == 1)
         for item in query_set:
             content_list.append({
                 'id': item.id,

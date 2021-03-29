@@ -1,8 +1,45 @@
-from flask import g, current_app
+from flask import g, current_app, request
 
 from . import bp_user_api
 from ...api_utils import *
-from ...models import Article, ArticleType
+from ...models import Article, ArticleType, Video
+
+
+@bp_user_api.route('/search/', methods=['GET'])
+def search_article_video():
+    """
+    公众号首页搜索文章&视频
+    :return:
+    """
+    content_type = request.args.get('content_type', 1)  # 1-文章 2-视频
+    search_key = request.args.get('search', '')
+    if len(search_key) < 1:
+        return api_success_response({})
+    content_list = []
+    if content_type == "1":
+        query_set = Article.select().where(Article.title.contains(search_key))
+        for item in query_set:
+            content_list.append({
+                'id': item.id,
+                'url': item.cover_url,
+                'title': item.title,
+                'read_count': item.real_use_count + item.extra_add_count,
+                'content_type': 1
+            })
+    else:
+        query_set = Video.select().where(Video.video_title.contains(search_key))
+        for item in query_set:
+            content_list.append({
+                'id': item.id,
+                'url': item.video_url,
+                'title': item.video_title,
+                'read_count': item.real_use_count + item.extra_add_count,
+                'content_type': 2
+            })
+    data = {
+        'content_list': content_list
+    }
+    return api_success_response(data)
 
 
 @bp_user_api.route('/article_type/all/', methods=['GET'])

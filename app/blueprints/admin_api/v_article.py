@@ -56,7 +56,7 @@ def article_type_sort():
     文章分类排序
     :return:
     """
-    article_types = g.json.get("article_types", [])
+    article_types = g.json.get("article_types")
     article_type_ids = [item.get('id') for item in article_types]
     query = ArticleType.select().where(ArticleType.id.in_(article_type_ids))
     type_id_entity_map = {item.id: item for item in query}

@@ -12,7 +12,7 @@ def search_article_video():
     :return:
     """
     content_type = request.args.get('content_type', 1)  # 1-文章 2-视频
-    search_key = request.args.get('search', '')
+    search_key = request.args.get('search_key', '')
     current_app.logger.info("search_key: {}".format(search_key))
     if len(search_key) < 1:
         return api_success_response({})

@@ -109,16 +109,12 @@ def delete_article():
 @bp_admin_api.route('/article/edit/', methods=['POST'])
 def edit_article():
     """编辑文章"""
-    # article_id, title, contents, cover_url, extra_add_count = map(g.json.get, ['article_id', 'title', 'contents', 'cover_url', 'extra_add_count'])
-    # claim_args(1203, article_id, title, contents, cover_url)
-    # claim_args_int(1204, article_id, extra_add_count)
-    # claim_args_str(1204, title, contents, cover_url)
-    # article = Article.get_by_id(article_id, code=1104)
-    # article.update_info(title, contents, cover_url, extra_add_count)
-    article_id, desc = map(g.json.get, ['article_id', 'desc'])
+    article_id, title, contents, cover_url, extra_add_count = map(g.json.get, ['article_id', 'title', 'contents', 'cover_url', 'extra_add_count'])
+    claim_args(1203, article_id, title, contents, cover_url)
+    claim_args_int(1204, article_id, extra_add_count)
+    claim_args_str(1204, title, contents, cover_url)
     article = Article.get_by_id(article_id, code=1104)
-    article.description = desc
-    article.save()
+    article.update_info(title, contents, cover_url, extra_add_count)
     return api_success_response({})
 
 

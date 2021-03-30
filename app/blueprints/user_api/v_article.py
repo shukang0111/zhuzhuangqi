@@ -32,7 +32,7 @@ def search_article_video():
         for item in query_set:
             content_list.append({
                 'id': item.id,
-                'url': item.video_url,
+                'url': item.cover_url,
                 'title': item.video_title,
                 'read_count': item.real_use_count + item.extra_add_count,
                 'content_type': 2

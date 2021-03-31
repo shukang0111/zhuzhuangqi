@@ -54,7 +54,7 @@ def get_all_article_type():
     current_app.logger.info(selected_article_type_ids)
     info = list()
     # 所有分类
-    query = ArticleType.select().where(ArticleType.is_delete == 0, ArticleType.show == 1)
+    query = ArticleType.select().where(ArticleType.is_delete == 0, ArticleType.show == 1).order_by(ArticleType.weight.asc())
     for _article_type in query:
         item = _article_type.to_dict()
         if item['id'] in selected_article_type_ids:

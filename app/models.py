@@ -433,6 +433,7 @@ class Article(BaseModel):
     cover_url = CharField(default='')
     real_use_count = IntegerField(default=0)
     extra_add_count = IntegerField(default=0)
+    description = CharField(default='')
 
     class Meta:
         table_name = "article"

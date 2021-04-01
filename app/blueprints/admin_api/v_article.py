@@ -43,21 +43,44 @@ def delete_article_type():
 @bp_admin_api.route('/article_type/all/', methods=['GET'])
 def get_all_article_type():
     """查询所有文章分类"""
-    query = ArticleType.select().where(ArticleType.is_delete == 0)
+    query = ArticleType.select().where(ArticleType.is_delete == 0).order_by(ArticleType.weight.asc())
     data = {
         "article_types": [article_type.to_dict() for article_type in query]
     }
     return api_success_response(data)
 
 
+@bp_admin_api.route('/article_type/sort/', methods=['POST'])
+def article_type_sort():
+    """
+    文章分类排序
+    :return:
+    """
+    article_types = g.json.get("article_types")
+    article_type_ids = [item.get('id') for item in article_types]
+    query = ArticleType.select().where(ArticleType.id.in_(article_type_ids))
+    type_id_entity_map = {item.id: item for item in query}
+    for item in article_types:
+        weight = item.get('weight', 0)
+        article_type = type_id_entity_map.get(item.get('id', 0))
+        if article_type is None:
+            continue
+        article_type.weight = weight
+        article_type.save()
+    return api_success_response({})
+
+
 @bp_admin_api.route('/article/create/', methods=['POST'])
 def create_article():
     """创建文章"""
-    article_type_id, title, contents, cover_url, extra_add_count = map(g.json.get, ['article_type_id', 'title', 'contents', 'cover_url', 'extra_add_count'])
+    article_type_id, title, contents, cover_url, extra_add_count, description = map(g.json.get, ['article_type_id', 'title', 'contents', 'cover_url', 'extra_add_count', 'description'])
     claim_args(1203, title, contents, cover_url)
     claim_args_int(1204, extra_add_count)
     claim_args_str(1204, title, contents, cover_url)
-    Article.new(article_type_id, title, contents, cover_url, extra_add_count)
+    article = Article.new(article_type_id, title, contents, cover_url, extra_add_count)
+    if description:
+        article.description = description
+        article.save()
     return api_success_response({})
 
 

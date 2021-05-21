@@ -94,6 +94,7 @@ def get_user_article_detail(article_id):
     item = article.to_dict()
     item['tid'] = 2
     item['cid'] = article.id
+    item['description'] = '' if not article.description else article.description
     data = {
         "article": item
     }

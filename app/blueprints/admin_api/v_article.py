@@ -138,8 +138,64 @@ def get_article_list(article_type_id):
 def get_article_detail(article_id):
     """查询单个文章详情"""
     article = Article.get_by_id(int(article_id), code=1104)
+    item = article.to_dict()
+    item['description'] = '' if not article.description else article.description
     data = {
         "article": article.to_dict()
     }
     return api_success_response(data)
+
+
+@bp_admin_api.route('/articles/', methods=['POST'])
+def get_articles():
+    """
+    导入文章查询页
+    :return:
+    """
+    article_type_id = g.json.get('article_type_id', '0')
+    # article_ids = g.json.get('article_ids', [])
+    search_key = g.json.get('search_key', '')
+    article_type = ArticleType.get_by_id(article_type_id, code=1104)
+    item = article_type.to_dict()
+    if len(search_key) > 0:
+        query = Article.select().where(Article.title.contains(search_key), Article.is_delete == 0)
+    if article_type_id != 0:
+        query = Article.select().where(Article.article_type_id == article_type_id, Article.is_delete == 0)
+    _articles = list()
+    for article in query:
+        item = {
+            'id': article.id,
+            'title': article.title
+        }
+        _articles.append(item)
+    data = {
+        "articles": _articles
+    }
+    return api_success_response(data)
+
+
+@bp_admin_api.route('/article/import/', methods=['POST'])
+def import_articles():
+    """
+    系统后台导入文章
+
+    :return:
+    """
+    article_type_id = g.json.get('article_type_id', 0)
+    article_ids = g.json.get('article_ids', [])
+    articles = Article.select().where(Article.id.in_(article_ids))
+    article_list = []
+    for item in articles:
+        article = Article()
+        article.article_type_id = article_type_id
+        article.title = item.title
+        article.contents = item.contents
+        article.cover_url = item.cover_url
+        article.extra_add_count = item.extra_add_count
+        article.description = item.description
+        article.show = item.show
+        article_list.append(article)
+    Article.bulk_create(article_list)
+
+    return api_success_response({})
 

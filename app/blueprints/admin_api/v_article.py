@@ -163,7 +163,8 @@ def get_articles():
     for article in query:
         item = {
             'id': article.id,
-            'title': article.title
+            'title': article.title,
+            'article_type_id': article.article_type_id,
         }
         _articles.append(item)
     data = {

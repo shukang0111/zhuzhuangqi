@@ -152,11 +152,9 @@ def get_articles():
     导入文章查询页
     :return:
     """
-    article_type_id = g.json.get('article_type_id', '0')
+    article_type_id = g.json.get('article_type_id', 0)
     # article_ids = g.json.get('article_ids', [])
     search_key = g.json.get('search_key', '')
-    article_type = ArticleType.get_by_id(article_type_id, code=1104)
-    item = article_type.to_dict()
     if len(search_key) > 0:
         query = Article.select().where(Article.title.contains(search_key), Article.is_delete == 0)
     if article_type_id != 0:
